@@ -1,0 +1,13 @@
+# --- Python rác ---
+__pycache__/
+*.pyc
+
+# --- Thư viện (Môi trường ảo) ---
+venv/
+.venv/
+
+# --- IDE rác ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
