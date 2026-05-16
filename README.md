@@ -10,7 +10,7 @@
 
 Đồ án này tập trung vào việc nghiên cứu, cài đặt hoàn toàn từ đầu (from scratch) và kiểm chứng thực nghiệm các phương pháp phân loại đa lớp (Multi-class Classification) kinh điển. Hệ thống mã nguồn được tái cấu trúc theo mô hình **Clean Architecture** chuyên nghiệp, chia thành 2 nhóm chiến lược lớn:
 
-### 🛡️ Nhóm 1: Các chiến lược Đa lớp dựa trên phân loại Nhị phân (`src/binary_reductions/`)
+### Nhóm 1: Các chiến lược Đa lớp dựa trên phân loại Nhị phân (`src/binary_reductions/`)
 
 Sử dụng **Linear SVM** tự xây dựng làm bộ phân loại gốc (base learner) để triển khai:
 
@@ -18,7 +18,7 @@ Sử dụng **Linear SVM** tự xây dựng làm bộ phân loại gốc (base l
 - **One-Vs-One (OVO):** Huấn luyện $k(k-1)/2$ bộ phân loại (gồm biểu quyết đa số kèm Tie-breaking và biểu quyết có trọng số Weighted OVO).
 - **Error-Correcting Output Codes (ECOC):** Sử dụng ma trận mã hóa (Binary/Ternary) kết hợp giải mã Hard/Soft Decoding (Euclidean, Exponential Loss theo công thức 8.19 FML).
 
-### ⚡ Nhóm 2: Các thuật toán Đa lớp trực tiếp (`src/direct_multiclass/`)
+### Nhóm 2: Các thuật toán Đa lớp trực tiếp (`src/direct_multiclass/`)
 
 Cài đặt từ đầu 3 thuật toán giải quyết trực tiếp bài toán đa lớp không qua kết hợp:
 
@@ -118,9 +118,9 @@ multi_classification_project/
 
 ---
 
-## 4. Hướng dẫn sử dụng (Master CLI Runner)
+## 5. Hướng dẫn sử dụng (Master CLI Runner)
 
-### 4.1. Cài đặt môi trường
+### 5.1. Cài đặt môi trường
 
 Đảm bảo bạn đã cài đặt Python 3.9 trở lên. Mở terminal tại thư mục gốc và thực thi lệnh sau để cài đặt các thư viện cần thiết:
 
@@ -128,43 +128,109 @@ multi_classification_project/
 pip install -r requirements.txt
 ```
 
-### 4.2. Thực thi kịch bản thực nghiệm với `main.py`
+### 5.2. Thực thi toàn bộ kịch bản thực nghiệm với `main.py`
 
-Dự án sử dụng Master CLI `main.py` với `argparse` để điều phối toàn bộ các thực nghiệm một cách linh hoạt và chuyên nghiệp:
+Dự án sử dụng Master CLI `main.py` với `argparse` để điều phối toàn bộ các thực nghiệm một cách linh hoạt, hỗ trợ từ chạy tổng thể đến từng module và thuật toán riêng biệt:
 
-- **🚀 Chạy toàn bộ tất cả thực nghiệm của dự án (Khuyên dùng):**
+#### Chạy Tổng thể Toàn bộ Dự án
 
+- **Chạy tất cả thực nghiệm từ A-Z (Khuyên dùng):**
   ```bash
   python main.py --all
   ```
+  _(Hệ thống sẽ tự động chạy Nhóm 1, Nhóm 2, Dữ liệu thực tế và biên dịch toàn bộ biểu đồ TikZ)_
 
-  _(Hệ thống sẽ tự động tạo thư mục `figures/` và xuất mới 100% toàn bộ 11 biểu đồ minh họa)_
+#### Chạy theo Từng Nhóm Chiến lược (Modules)
 
-- **🛡️ Chạy riêng toàn bộ thực nghiệm Nhóm 1 (Binary Reductions):**
-
+- **Chạy Nhóm 1: Các chiến lược phân rã nhị phân (OVA, OVO, ECOC):**
   ```bash
   python main.py --module binary_reductions
   ```
-
-- **⚡ Chạy riêng toàn bộ thực nghiệm Nhóm 2 (Direct Multi-class):**
-
+- **Chạy Nhóm 2: Các thuật toán đa lớp trực tiếp (Tree, SVM, AdaBoost):**
   ```bash
   python main.py --module direct_multiclass
   ```
+- **Chạy Nhóm 3: Thực nghiệm trên Dữ liệu Thực tế (MNIST & EUR-Lex đã tối ưu hóa):**
+  ```bash
+  python main.py --module real_datasets
+  ```
+- **Chạy Nhóm 3 (Chế độ Baseline Gốc): Thực nghiệm Dữ liệu Thực tế bằng Thuật toán Gốc chưa tối ưu:**
 
-- **🎯 Chạy một kịch bản thực nghiệm cụ thể (Ví dụ: Cây quyết định):**
+  ```bash
+  python main.py --pure-real
+  ```
+
+- **Chạy Nhóm 4: Biên dịch tự động Lý thuyết TikZ (LaTeX):**
+  ```bash
+  python main.py --module theory
+  ```
+  _(hoặc dùng cờ gõ tắt: `python main.py --tikz`)_
+- **Chạy Nhóm 5: Bộ Phân Tích Toàn Diện Tối ƯU HÓA (Khuyên dùng để demo tốc độ):**
+  ```bash
+  python main.py --optimize
+  ```
+  _(hoặc dùng cờ: `python main.py --module optimization_benchmark`)_
+
+#### Chạy Lẻ Từng Kịch bản / Thuật toán Cụ thể (Experiments)
+
+Nếu bạn chỉ muốn kiểm tra nhanh một thuật toán cụ thể, hãy dùng cờ `--experiment`:
+
+- **Kiểm chứng riêng MNIST (So sánh OVA vs OVO đa luồng):**
+  ```bash
+  python main.py --experiment mnist
+  ```
+- **Kiểm chứng riêng EUR-Lex (Ma trận thưa & Extreme Multi-label):**
+  ```bash
+  python main.py --experiment eurlex
+  ```
+- **Kiểm chứng riêng Cây quyết định (So sánh Gini/Entropy):**
   ```bash
   python main.py --experiment tree
   ```
-  _(Các lựa chọn experiment hỗ trợ: `visual`, `ovo`, `performance`, `calibration`, `complexity`, `tree`, `svm`, `ad(aboost`)_
+- **Kiểm chứng riêng Multi-class SVM (Hội tụ Hinge Loss):**
+  ```bash
+  python main.py --experiment svm
+  ```
+- **Kiểm chứng riêng AdaBoost.MH (Hội tụ hàm mục tiêu tối ưu bộ nhớ):**
+  ```bash
+  python main.py --experiment adaboost
+  ```
+- **Kiểm chứng riêng trực quan ranh giới quyết định 2D (Visual):**
+  ```bash
+  python main.py --experiment visual
+  ```
+- **Kiểm chứng riêng phân tích nhầm lẫn OVO (Pairwise Confusion):**
+  ```bash
+  python main.py --experiment ovo
+  ```
+- **Kiểm chứng riêng so sánh hiệu năng & ECOC Depth (Performance):**
+  ```bash
+  python main.py --experiment performance
+  ```
+- **Kiểm chứng riêng hiệu chuẩn xác suất Platt Scaling (Calibration):**
+  ```bash
+  python main.py --experiment calibration
+  ```
+- **Kiểm chứng riêng độ phức tạp thời gian & T-test (Complexity):**
+  ```bash
+  python main.py --experiment complexity
+  ```
+- **Biên dịch riêng biểu đồ TikZ:**
+  ```bash
+  python main.py --experiment tikz
+  ```
+- **Chạy bộ phân tích toàn diện tối ưu hóa:**
+  ```bash
+  python main.py --experiment optimize
+  ```
 
 ---
 
-## 5. Danh mục Kết quả Thực nghiệm
+## 6. Danh mục Kết quả Thực nghiệm
 
 Toàn bộ các biểu đồ minh họa và phân tích thực nghiệm được lưu trữ tập trung tại `figures/` theo đúng phân nhóm:
 
-### 🛡️ Nhóm 1: Các chiến lược Đa lớp dựa trên Nhị phân (`figures/binary_reductions/`)
+### Nhóm 1: Các chiến lược Đa lớp dựa trên Nhị phân (`figures/binary_reductions/`)
 
 1. **Trực quan hóa Ma trận mã hóa (`all_coding_matrices.png`):** So sánh cấu trúc của OVA, OVO và ECOC.
 2. **Decision Boundaries (`decision_boundaries_all.png`):** Ranh giới quyết định của các chiến lược trên dữ liệu 2D.
@@ -175,13 +241,34 @@ Toàn bộ các biểu đồ minh họa và phân tích thực nghiệm được
 7. **Kiểm chứng Lý thuyết (`complexity_time.png`):** Kiểm chứng độ phức tạp thời gian huấn luyện theo số lớp $k$ (Table 8.1 FML).
 8. **Kiểm định Thống kê (`hypothesis_test.png`):** Paired T-test (10 runs) xác định sự khác biệt hiệu năng có ý nghĩa thống kê.
 
-### ⚡ Nhóm 2: Các thuật toán Đa lớp trực tiếp (`figures/direct_multiclass/`)
+### Nhóm 2: Các thuật toán Đa lớp trực tiếp (`figures/direct_multiclass/`)
 
-_(💡 Hỗ trợ xuất song song định dạng `.pdf` chất lượng cao cho báo cáo LaTeX và `.png` để xem trực tiếp trên VS Code)_
+_(Hỗ trợ xuất song song định dạng `.pdf` chất lượng cao cho báo cáo LaTeX và `.png` để xem trực tiếp trên VS Code)_
 
 1. **So sánh Tiêu chí Vẩn đục (`impurity_compare.pdf` / `.png`):** Đối sánh đồ thị giữa Gini index, Entropy và Misclassification error.
 2. **Hội tụ Multi-class SVM (`svm_loss_curve.pdf` / `.png`):** Đường cong Hinge loss trung bình giảm dần qua các Epoch bằng Subgradient Descent.
 3. **Hội tụ AdaBoost.MH (`adaboost_convergence.pdf` / `.png`):** Đồ thị hội tụ hàm mục tiêu $F(\alpha)$ và Training error giảm theo số vòng lặp $T$.
+
+### Nhóm 3: Thực nghiệm trên Dữ liệu Thực tế (`figures/real_datasets/`)
+
+1. **Đối sánh OVA vs OVO trên MNIST (`mnist_ova_vs_ovo.png`):** Biểu đồ cột kép so sánh trực tiếp thời gian huấn luyện đa luồng và độ chính xác.
+2. **Phân tích XMC trên EUR-Lex (`eurlex_performance.png`):** Biểu đồ phân phối nhãn thực tế vs dự đoán trên ma trận thưa quy mô lớn.
+
+### Nhóm 4: Biểu đồ Lý thuyết TikZ (`figures/theory/`)
+
+1. **Ranh giới Multi-class SVM (`tikz_multiclass_svm.pdf`):** Minh họa vector trọng số và lề đa lớp.
+2. **Cây quyết định & Phân hoạch (`tikz_decision_tree.pdf`):** Sơ đồ cây nhị phân đối ngẫu với đồ thị phân hoạch không gian 2D.
+3. **Đồ thị Vẩn đục (`tikz_impurity.pdf`):** Đường cong Gini, Entropy và Misclassification error chuẩn xác theo sách FML.
+4. **Mô hình ECOC (`tikz_ecoc.pdf`):** Kiến trúc mã hóa, truyền tin và giải mã khoảng cách Hamming.
+5. **OVA & OVO (`tikz_ova_ovo.pdf`):** Sơ đồ đối sánh trực quan kiến trúc phân rã của hai chiến lược kinh điển.
+
+### Nhóm 5: Bộ Phân Tích Toàn Diện Tối Ưu Hóa (`figures/optimization_benchmark/`)
+
+1. **Ranh giới Quyết định Đa luồng (`optimized_boundaries.png`):** Contour plots ranh giới phân lớp của Parallel OVA, Parallel OVO và ECOC.
+2. **Heatmap Lỗi OVO Đa luồng (`optimized_ovo_heatmap.png`):** Ma trận nhầm lẫn cặp phân tích sai số giữa các lớp của Parallel OVO.
+3. **Hiệu năng Mô hình Tối ưu (`optimized_performance.png`):** Biểu đồ cột đối sánh Accuracy giữa các mô hình song song và Fast Tree.
+4. **Hội tụ AdaBoost Tối ưu Bộ nhớ (`optimized_adaboost_convergence.png`):** Đồ thị hội tụ siêu tốc không dùng ma trận độn 999999.0.
+5. **Kiểm định T-test Đa luồng (`optimized_ttest.png`):** Phân phối boxplot so sánh 10 runs giữa Parallel OVA và Parallel OVO.
 
 ---
 

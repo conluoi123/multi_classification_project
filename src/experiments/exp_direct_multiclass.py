@@ -12,9 +12,11 @@ if BASE_DIR not in sys.path:
 
 from src.utils.data_loader import load_synthetic_data
 from src.utils.visualization import plot_boundary
-from src.direct_multiclass.decision_tree import gini, entropy, DecisionTreeClassifier
+from src.direct_multiclass.decision_tree import gini, entropy
+from src.optimization.fast_tree import FastDecisionTreeClassifier
 from src.direct_multiclass.svm_multiclass import MulticlassSVM
-from src.direct_multiclass.adaboost_mh import AdaBoostMH, to_multilabel
+from src.optimization.memory_adaboost import MemoryEfficientAdaBoostMH as AdaBoostMH
+from src.direct_multiclass.adaboost_mh import to_multilabel
 
 def savefig(name):
     # Lưu định dạng gốc (.pdf dành cho báo cáo LaTeX/Overleaf)
@@ -49,7 +51,7 @@ def run_decision_tree_experiment():
     savefig('impurity_compare.pdf')
 
     (X_tr_blob, X_te_blob, y_tr_blob, y_te_blob), _ = load_synthetic_data()
-    clf = DecisionTreeClassifier(criterion='gini', max_depth=4)
+    clf = FastDecisionTreeClassifier(criterion='gini', max_depth=4)
     clf.fit(X_tr_blob, y_tr_blob)
     print(f"  → Train accuracy: {np.mean(clf.predict(X_tr_blob) == y_tr_blob):.2%}")
     print(f"  → Test  accuracy: {np.mean(clf.predict(X_te_blob) == y_te_blob):.2%}\n")

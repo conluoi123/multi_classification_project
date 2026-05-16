@@ -7,6 +7,7 @@ def to_multilabel(y, k):
     Y = -np.ones((m, k), dtype=float)
     Y[np.arange(m), y] = 1.0
     return Y
+
 class AdaBoostMH:
     """AdaBoost.MH cài từ đầu"""
     def __init__(self, T=50):
@@ -65,4 +66,3 @@ class AdaBoostMH:
     def predict(self, X, k):
         scores = self.predict_scores(X, k)
         return np.argmax(scores, axis=1)
-    
