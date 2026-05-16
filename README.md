@@ -78,42 +78,65 @@ _(Vui lòng cập nhật thông tin thành viên 2 và 3)_
 multi_classification_project/
 ├── src/
 │   ├── __init__.py
-│   ├── base/                   # Các bộ Base Classifier dùng chung
+│   ├── base/                       # Các bộ Base Classifier dùng chung
 │   │   ├── __init__.py
-│   │   ├── binary_svm.py       # Bộ phân loại nhị phân gốc (Linear SVM)
-│   │   └── decision_stump.py   # Base learner cho AdaBoost.MH
+│   │   ├── binary_svm.py           # Bộ phân loại nhị phân gốc (Linear SVM)
+│   │   └── decision_stump.py       # Base learner cho AdaBoost.MH
 │   │
-│   ├── binary_reductions/      # Nhóm 1: Các chiến lược phân rã nhị phân
+│   ├── binary_reductions/          # Nhóm 1: Các chiến lược phân rã nhị phân
 │   │   ├── __init__.py
-│   │   ├── ova_classifier.py   # Chiến lược OVA & Platt Scaling
-│   │   ├── ovo_classifier.py   # Chiến lược OVO & Weighted OVO
-│   │   └── ecoc_classifier.py  # Chiến lược ECOC (Hard/Soft decoding)
+│   │   ├── ova_classifier.py       # Chiến lược OVA & Platt Scaling
+│   │   ├── ovo_classifier.py       # Chiến lược OVO & Weighted OVO
+│   │   └── ecoc_classifier.py      # Chiến lược ECOC (Hard/Soft decoding)
 │   │
-│   ├── direct_multiclass/      # Nhóm 2: Các thuật toán đa lớp trực tiếp
+│   ├── direct_multiclass/          # Nhóm 2: Các thuật toán đa lớp trực tiếp
 │   │   ├── __init__.py
-│   │   ├── decision_tree.py    # Cây quyết định (Gini, Entropy)
-│   │   ├── svm_multiclass.py   # Multi-class SVM (Subgradient descent)
-│   │   └── adaboost_mh.py      # AdaBoost.MH
+│   │   ├── decision_tree.py        # Cây quyết định gốc (Gini, Entropy)
+│   │   ├── svm_multiclass.py       # Multi-class SVM (Subgradient descent)
+│   │   └── adaboost_mh.py          # AdaBoost.MH gốc
 │   │
-│   ├── utils/                  # Các module tiện ích dùng chung
+│   ├── optimization/               # Nhóm Tối ưu hóa hiệu năng cao (SOTA)
 │   │   ├── __init__.py
-│   │   ├── data_loader.py      # Sinh và nạp dữ liệu tổng hợp
-│   │   ├── visualization.py    # Vẽ ranh giới quyết định và cấu hình style
-│   │   └── metrics.py          # Tính toán Accuracy, Confusion Matrix
+│   │   ├── parallel_ova.py         # Parallel One-vs-All (joblib đa luồng)
+│   │   ├── parallel_ovo.py         # Parallel One-vs-One (joblib đa luồng)
+│   │   ├── fast_tree.py            # Cây quyết định tối ưu (Quantile subsampling)
+│   │   └── memory_adaboost.py      # AdaBoost.MH siêu tốc không dùng ma trận độn
 │   │
-│   └── experiments/            # Các kịch bản thực nghiệm được đóng gói
+│   ├── utils/                      # Các module tiện ích dùng chung
+│   │   ├── __init__.py
+│   │   ├── data_loader.py          # Nạp dữ liệu tự sinh, LibSVM, CSV vật lý
+│   │   ├── visualization.py        # Vẽ ranh giới quyết định và cấu hình style
+│   │   └── metrics.py              # Tính toán Accuracy, Confusion Matrix
+│   │
+│   └── experiments/                # Các kịch bản thực nghiệm được đóng gói
 │       ├── __init__.py
-│       ├── exp_binary_reductions.py
-│       └── exp_direct_multiclass.py
+│       ├── exp_binary_reductions.py      # Kịch bản chạy Nhóm 1
+│       ├── exp_direct_multiclass.py      # Kịch bản chạy Nhóm 2
+│       ├── exp_real_datasets.py          # Kịch bản chạy Nhóm 3 (MNIST & EUR-Lex)
+│       ├── exp_optimization_benchmark.py # Kịch bản chạy Nhóm 5 (Rich Analysis)
+│       └── exp_tikz_compiler.py          # Kịch bản chạy Nhóm 4 (Biên dịch TikZ)
 │
-├── figures/                    # Thư mục lưu trữ biểu đồ phân cấp tự động
-│   ├── binary_reductions/      # Lưu 8 biểu đồ .png của Nhóm 1
-│   └── direct_multiclass/      # Lưu 3 biểu đồ (song song .pdf & .png) của Nhóm 2
+├── data/                           # Thư mục lưu trữ dữ liệu vật lý thực tế
+│   ├── Eurlex/                     # Chứa tệp eurlex_train.txt (LibSVM XMC)
+│   └── FashionMNIST/               # Chứa tệp fashion-mnist_train.csv
 │
-├── main.py                     # Master CLI Runner (Điều phối trung tâm)
-├── requirements.txt            # Danh sách thư viện phụ thuộc chung
-├── PROJECT_CONTEXT.md          # Tài liệu bối cảnh, tác dụng file và hạn chế
-└── task.md                     # Danh sách công việc theo dõi tiến độ
+├── latex/                          # Mã nguồn LaTeX/TikZ minh họa lý thuyết
+│   ├── tikz_ecoc.tex               # Kiến trúc ma trận mã hóa ECOC
+│   ├── tikz_ova_ovo.tex            # Sơ đồ đối sánh chiến lược OVA vs OVO
+│   ├── tikz_multiclass_svm.tex     # Kiến trúc lề đa lớp CS-SVM
+│   └── tikz_impurity.tex           # Đồ thị so sánh độ vẩn đục Gini vs Entropy
+│
+├── figures/                        # Thư mục lưu trữ toàn bộ biểu đồ phân cấp
+│   ├── binary_reductions/          # Biểu đồ đánh giá Nhóm 1
+│   ├── direct_multiclass/          # Biểu đồ đánh giá Nhóm 2
+│   ├── real_datasets/              # Biểu đồ thực nghiệm MNIST & EUR-Lex (Nhóm 3)
+│   ├── theory/                     # Biểu đồ lý thuyết biên dịch từ TikZ (Nhóm 4)
+│   └── optimization_benchmark/     # Biểu đồ phân tích chuyên sâu tối ưu hóa (Nhóm 5)
+│
+├── main.py                         # Master CLI Runner (Điều phối trung tâm)
+├── requirements.txt                # Danh sách thư viện phụ thuộc chung
+├── PROJECT_CONTEXT.md              # Tài liệu bối cảnh, tác dụng file và hạn chế
+└── task.md                         # Danh sách công việc theo dõi tiến độ
 ```
 
 ---
