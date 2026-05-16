@@ -1,0 +1,66 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetikzlibrary{arrows.meta, calc, positioning, decorations.pathreplacing}
+
+\begin{document}
+\begin{tikzpicture}[scale=1.5, >=Stealth, font=\small]
+
+    % --- Grid & Axes ---
+    \draw[step=1.0, gray!15, thin] (-3,-3) grid (3,3);
+    \draw[->, thick, gray!70] (-3.2,0) -- (3.2,0) node[right, text=black] {$x_1$};
+    \draw[->, thick, gray!70] (0,-3.2) -- (0,3.2) node[above, text=black] {$x_2$};
+
+    % --- Decision Boundaries (w_i - w_j) ---
+    % Giả sử w1=(1.5, 2), w2=(-2, 1), w3=(0.5, -2.5)
+    % Các đường ranh giới vuông góc với (wi - wj)
+    \draw[thick, dashed, blue!60!black] (0,0) -- (2.5, -0.6) node[right] {Ranh giới 1-3};
+    \draw[thick, dashed, red!60!black] (0,0) -- (-0.8, 2.8) node[above] {Ranh giới 1-2};
+    \draw[thick, dashed, green!60!black] (0,0) -- (-2.2, -1.8) node[below left] {Ranh giới 2-3};
+
+    % --- Weight Vectors w_i ---
+    \draw[->, very thick, blue] (0,0) -- (1.5, 2) node[above right] {$\mathbf{w}_1$ (Lớp 1)};
+    \draw[->, very thick, red] (0,0) -- (-2, 1) node[above left] {$\mathbf{w}_2$ (Lớp 2)};
+    \draw[->, very thick, green!70!black] (0,0) -- (0.5, -2.5) node[below right] {$\mathbf{w}_3$ (Lớp 3)};
+
+    % --- Data Points & Clusters ---
+    % Cluster 1 (Blue)
+    \foreach \p in {(1.8, 2.2), (1.2, 2.5), (2.2, 1.5), (1.5, 1.2), (2.5, 2.5)} {
+        \fill[blue!80] \p circle (1.5pt);
+    }
+    % Cluster 2 (Red)
+    \foreach \p in {(-2.2, 1.5), (-1.8, 2.2), (-2.5, 0.8), (-1.5, 1.2), (-2.8, 1.8)} {
+        \fill[red!80] \p circle (1.5pt);
+    }
+    % Cluster 3 (Green)
+    \foreach \p in {(0.8, -2.2), (1.2, -2.8), (0.2, -2.5), (-0.5, -2.2), (1.5, -2.0)} {
+        \fill[green!70!black] \p circle (1.5pt);
+    }
+
+    % --- Margin Illustration (Sample Point x) ---
+    \coordinate (X) at (1.6, 1.8);
+    \fill[orange, draw=black, thick] (X) circle (2.5pt) node[above left, font=\footnotesize\bfseries] {$\mathbf{x}$};
+    
+    % Hình chiếu của x lên w1
+    \draw[dotted, thick, orange!80!black] (X) -- ($(0,0)!(X)!(1.5,2)$) coordinate (P1);
+    \fill[blue] (P1) circle (1pt);
+    
+    % Hình chiếu của x lên w2
+    \draw[dotted, thick, orange!80!black] (X) -- ($(0,0)!(X)!(-2,1)$) coordinate (P2);
+    \fill[red] (P2) circle (1pt);
+
+    % Ghi chú Margin \rho_h(x, y)
+    \draw[<->, thick, purple] ($(0,0)!(X)!(1.5,2)$) -- ($(0,0)!(X)!(-2,1)$) 
+        node[midway, sloped, above, font=\footnotesize, text=purple] {Lề $\rho_h(\mathbf{x}, y)$};
+
+    % --- Title ---
+    \node[draw, fill=white, thick, align=center] at (0, -3.8) {
+        \textbf{Hình 1.3.1: Ranh giới quyết định \& Lề của Multi-class SVM} \\
+        $\mathbf{x}$ được gán nhãn $\hat{y} = \arg\max_y (\mathbf{w}_y \cdot \mathbf{x})$ (Hình chiếu lớn nhất)
+    };
+
+\end{tikzpicture}
+\end{document}

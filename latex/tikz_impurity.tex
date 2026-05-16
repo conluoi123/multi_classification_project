@@ -1,0 +1,56 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetikzlibrary{arrows.meta, calc, positioning}
+
+\begin{document}
+\begin{tikzpicture}[scale=5, >=Stealth, font=\small]
+
+    % --- Grid & Axes ---
+    \draw[step=0.2, gray!20, thin] (0,0) grid (1,0.6);
+    \draw[->, thick] (0,0) -- (1.05,0) node[right] {$p$};
+    \draw[->, thick] (0,0) -- (0,0.65) node[above] {Độ vẩn đục $F(p)$};
+
+    % Ticks on x-axis
+    \foreach \x in {0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0} {
+        \draw[thick] (\x, 0) -- (\x, -0.02) node[below, font=\footnotesize] {\x};
+    }
+    % Ticks on y-axis
+    \foreach \y in {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6} {
+        \draw[thick] (0, \y) -- (-0.02, \y) node[left, font=\footnotesize] {\y};
+    }
+
+    % --- 1. Misclassification Error: 1 - max(p, 1-p) ---
+    % Từ (0,0) đến (0.5, 0.5), rồi (0.5, 0.5) đến (1,0)
+    \draw[thick, black, densely dotted] (0,0) -- (0.5, 0.5) -- (1,0);
+    \node[text=black, font=\footnotesize, rotate=42] at (0.25, 0.28) {Misclassification};
+
+    % --- 2. Gini Index: 2p(1-p) ---
+    % Parabol đỉnh (0.5, 0.5)
+    \draw[very thick, red, domain=0:1, samples=100] plot (\x, {2*\x*(1-\x)});
+    \node[text=red, font=\footnotesize, rotate=22] at (0.28, 0.43) {Gini Index $2p(1-p)$};
+
+    % --- 3. Half Entropy: -0.5 * (p log2 p + (1-p) log2 (1-p)) ---
+    % Đỉnh (0.5, 0.5)
+    \draw[very thick, blue, dashed, domain=0.0001:0.9999, samples=100] 
+        plot (\x, {-0.5 * (\x * ln(\x)/ln(2) + (1-\x) * ln(1-\x)/ln(2))});
+    \node[text=blue, font=\footnotesize] at (0.5, 0.54) {Entropy (scaled $\times 0.5$)};
+
+    % --- Legend Box ---
+    \matrix [draw, fill=white, below left=10pt and 10pt of {1,0.6}, nodes={right, font=\footnotesize}] {
+        \draw[very thick, red] (0,0) -- (0.3,0); & \node{Gini Index}; \\
+        \draw[very thick, blue, dashed] (0,0) -- (0.3,0); & \node{Entropy ($\times 0.5$)}; \\
+        \draw[thick, black, densely dotted] (0,0) -- (0.3,0); & \node{Misclassification}; \\
+    };
+
+    % --- Title / Caption ---
+    \node[draw, fill=white, thick, align=center] at (0.5, -0.18) {
+        \textbf{Hình 1.3.3 (Hình 8.4 FML): Đối sánh 3 hàm đo lường độ vẩn đục (Node Impurity)} \\
+        Cả ba hàm đều đạt cực đại tại $p=0.5$ (vẩn đục nhất) và bằng $0$ tại $p=0, p=1$ (hoàn toàn thuần khiết).
+    };
+
+\end{tikzpicture}
+\end{document}

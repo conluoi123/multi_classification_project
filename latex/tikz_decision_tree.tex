@@ -1,0 +1,80 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetikzlibrary{arrows.meta, calc, positioning, shapes.geometric}
+
+\begin{document}
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+
+    % ==========================================
+    % BÊN TRÁI: KIẾN TRÚC CÂY QUYẾT ĐỊNH (BINARY TREE)
+    % ==========================================
+    \node[align=center, font=\bfseries] at (-2.5, 3.5) {Kiến trúc Cây Quyết định};
+
+    % Root Node
+    \node[draw, thick, rectangle, rounded corners, fill=blue!10, minimum width=1.5cm, minimum height=0.6cm] 
+        (root) at (-2.5, 2.5) {$X_1 < a_1$};
+
+    % Level 1 Nodes
+    \node[draw, thick, rectangle, rounded corners, fill=blue!10, minimum width=1.5cm, minimum height=0.6cm] 
+        (left1) at (-4, 1.0) {$X_2 < a_2$};
+    \node[draw, thick, rectangle, rounded corners, fill=blue!10, minimum width=1.5cm, minimum height=0.6cm] 
+        (right1) at (-1, 1.0) {$X_2 < a_3$};
+
+    % Level 2 Leaves (Left subtree)
+    \node[draw, thick, circle, fill=green!20, minimum size=0.6cm] (R1) at (-4.8, -0.5) {$R_1$};
+    \node[draw, thick, circle, fill=green!20, minimum size=0.6cm] (R2) at (-3.2, -0.5) {$R_2$};
+
+    % Level 2 Leaves (Right subtree)
+    \node[draw, thick, circle, fill=green!20, minimum size=0.6cm] (R3) at (-1.8, -0.5) {$R_3$};
+    \node[draw, thick, circle, fill=green!20, minimum size=0.6cm] (R4) at (-0.2, -0.5) {$R_4$};
+
+    % Edges
+    \draw[->, thick] (root) -- (left1) node[midway, above left, font=\footnotesize] {Đúng (Yes)};
+    \draw[->, thick] (root) -- (right1) node[midway, above right, font=\footnotesize] {Sai (No)};
+    
+    \draw[->, thick] (left1) -- (R1) node[midway, above left, font=\footnotesize] {Đúng};
+    \draw[->, thick] (left1) -- (R2) node[midway, above right, font=\footnotesize] {Sai};
+    
+    \draw[->, thick] (right1) -- (R3) node[midway, above left, font=\footnotesize] {Đúng};
+    \draw[->, thick] (right1) -- (R4) node[midway, above right, font=\footnotesize] {Sai};
+
+
+    % ==========================================
+    % BÊN PHẢI: PHÂN HOẠCH KHÔNG GIAN (FEATURE SPACE)
+    % ==========================================
+    \node[align=center, font=\bfseries] at (3.5, 3.5) {Phân hoạch Không gian Đặc trưng};
+
+    \begin{scope}[shift={(1.5, -1.0)}] % Gốc tọa độ của box bên phải
+        % Box ngoài (0,0) đến (4,4)
+        \draw[thick] (0,0) rectangle (4,4);
+        \draw[->, thick] (0,0) -- (4.5,0) node[right] {$X_1$};
+        \draw[->, thick] (0,0) -- (0,4.5) node[above] {$X_2$};
+
+        % Đường phân chia chính X1 = a1 (giả sử a1 = 2)
+        \draw[very thick, blue] (2,0) -- (2,4) node[above, font=\footnotesize] {$a_1$};
+
+        % Đường phân chia bên trái X2 = a2 (giả sử a2 = 1.5, áp dụng cho X1 < 2)
+        \draw[very thick, red] (0,1.5) -- (2,1.5) node[left=2cm, font=\footnotesize] {$a_2$};
+
+        % Đường phân chia bên phải X2 = a3 (giả sử a3 = 2.8, áp dụng cho X1 > 2)
+        \draw[very thick, purple] (2,2.8) -- (4,2.8) node[right, font=\footnotesize] {$a_3$};
+
+        % Tên các vùng R_i
+        \node[font=\bfseries\large, text=green!60!black] at (1, 0.75) {$R_1$};
+        \node[font=\bf "\bfseries\large", text=green!60!black] at (1, 2.75) {$R_2$};
+        \node[font=\bfseries\large, text=green!60!black] at (3, 1.4) {$R_3$};
+        \node[font=\bfseries\large, text=green!60!black] at (3, 3.4) {$R_4$};
+    \end{scope}
+
+    % --- Caption ---
+    \node[draw, fill=white, thick, align=center] at (0.5, -2.5) {
+        \textbf{Hình 1.3.3 (Hình 8.2 FML): Đối sánh Cây quyết định \& Phân hoạch không gian} \\
+        Mỗi lá $R_i$ của cây tương ứng với một vùng hình chữ nhật trực giao trong không gian đặc trưng.
+    };
+
+\end{tikzpicture}
+\end{document}

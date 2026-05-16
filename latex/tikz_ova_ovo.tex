@@ -1,0 +1,96 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetikzlibrary{arrows.meta, calc, positioning}
+
+\begin{document}
+\begin{tikzpicture}[scale=1.3, >=Stealth, font=\small]
+
+    % ==========================================
+    % BÊN TRÁI: CHIẾN LƯỢC ONE-VS-ALL (OVA / OvR)
+    % ==========================================
+    \node[align=center, font=\bfseries\large] at (-2.5, 3.2) {Chiến lược One-vs-All (OVA) \\ $k=3$ bộ phân loại};
+
+    % Khung tọa độ
+    \draw[thick, gray!30] (-4.5, -2.5) rectangle (-0.5, 2.5);
+
+    % Data Points (3 Lớp A, B, C)
+    % Lớp A (Blue)
+    \foreach \p in {(-2.5, 1.8), (-2.2, 1.5), (-2.8, 1.6), (-2.4, 1.2), (-2.6, 2.1)} {
+        \fill[blue] \p circle (2pt);
+    }
+    \node[font=\bfseries, text=blue] at (-2.5, 2.2) {Lớp A};
+
+    % Lớp B (Red)
+    \foreach \p in {(-3.8, -1.2), (-3.5, -1.5), (-4.1, -1.0), (-3.6, -0.8), (-3.9, -1.7)} {
+        \fill[red] \p circle (2pt);
+    }
+    \node[font=\bfseries, text=red] at (-3.8, -2.0) {Lớp B};
+
+    % Lớp C (Green)
+    \foreach \p in {(-1.2, -1.2), (-1.5, -1.5), (-0.9, -1.0), (-1.4, -0.8), (-1.1, -1.7)} {
+        \fill[green!70!black] \p circle (2pt);
+    }
+    \node[font=\bfseries, text=green!70!black] at (-1.2, -2.0) {Lớp C};
+
+    % Ranh giới OVA (Mỗi lớp vs Phần còn lại)
+    % Ranh giới A vs (B+C)
+    \draw[very thick, blue, dashed] (-4.2, 0.5) -- (-0.8, 0.5) node[right, font=\footnotesize] {A vs (B,C)};
+    
+    % Ranh giới B vs (A+C)
+    \draw[very thick, red, dashed] (-2.5, -2.2) -- (-2.8, 1.0) node[above, font=\footnotesize] {B vs (A,C)};
+    
+    % Ranh giới C vs (A+B)
+    \draw[very thick, green!70!black, dashed] (-2.5, -2.2) -- (-2.2, 1.0) node[above, font=\footnotesize] {C vs (A,B)};
+
+
+    % ==========================================
+    % BÊN PHẢI: CHIẾN LƯỢC ONE-VS-ONE (OVO)
+    % ==========================================
+    \node[align=center, font=\bfseries\large] at (2.5, 3.2) {Chiến lược One-vs-One (OVO) \\ $k(k-1)/2 = 3$ bộ phân loại};
+
+    % Khung tọa độ
+    \draw[thick, gray!30] (0.5, -2.5) rectangle (4.5, 2.5);
+
+    % Data Points (3 Lớp A, B, C) - Vị trí tương tự bên trái
+    % Lớp A (Blue)
+    \foreach \p in {(2.5, 1.8), (2.2, 1.5), (2.8, 1.6), (2.4, 1.2), (2.6, 2.1)} {
+        \fill[blue] \p circle (2pt);
+    }
+    \node[font=\bfseries, text=blue] at (2.5, 2.2) {Lớp A};
+
+    % Lớp B (Red)
+    \foreach \p in {(1.2, -1.2), (1.5, -1.5), (0.9, -1.0), (1.4, -0.8), (1.1, -1.7)} {
+        \fill[red] \p circle (2pt);
+    }
+    \node[font=\bfseries, text=red] at (1.2, -2.0) {Lớp B};
+
+    % Lớp C (Green)
+    \foreach \p in {(3.8, -1.2), (3.5, -1.5), (4.1, -1.0), (3.6, -0.8), (3.9, -1.7)} {
+        \fill[green!70!black] \p circle (2pt);
+    }
+    \node[font=\bfseries, text=green!70!black] at (3.8, -2.0) {Lớp C};
+
+    % Ranh giới OVO (Từng cặp Lớp i vs Lớp j)
+    % Ranh giới A vs B
+    \draw[very thick, purple, dashed] (0.8, 0.8) -- (3.2, -0.5) node[right, font=\footnotesize] {A vs B};
+    
+    % Ranh giới A vs C
+    \draw[very thick, orange!90!black, dashed] (4.2, 0.8) -- (1.8, -0.5) node[left, font=\footnotesize] {A vs C};
+    
+    % Ranh giới B vs C
+    \draw[very thick, teal, dashed] (2.5, -2.3) -- (2.5, 0.5) node[above, font=\footnotesize] {B vs C};
+
+
+    % --- Caption ---
+    \node[draw, fill=white, thick, align=center] at (0, -3.2) {
+        \textbf{Hình 1.4.1 \& 1.4.2: Đối sánh ranh giới phân chia giữa OVA và OVO} \\
+        OVA tìm ranh giới phân biệt 1 lớp với tất cả các lớp còn lại (dễ mất cân bằng dữ liệu). \\
+        OVO tìm ranh giới phân biệt riêng từng cặp lớp (dữ liệu cân bằng hơn nhưng số lượng mô hình tăng theo $O(k^2)$).
+    };
+
+\end{tikzpicture}
+\end{document}

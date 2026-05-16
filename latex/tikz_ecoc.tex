@@ -1,0 +1,75 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetikzlibrary{arrows.meta, calc, positioning, matrix}
+
+\begin{document}
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+
+    % --- ECOC Coding Matrix M (k x c) ---
+    \node[font=\bfseries\large, text=blue!80!black] at (1.5, 3.2) {Ma trận Mã hóa $M$ ($k \times c$)};
+
+    \matrix[matrix of nodes, nodes={draw, rectangle, minimum size=0.9cm, font=\bfseries}, 
+            column sep=2pt, row sep=2pt, nodes in empty cells] (M) at (1.5, 1.0)
+    {
+        $+1$ & $-1$ & $+1$ & $+1$ & $-1$ & $+1$ \\
+        $+1$ & $+1$ & $-1$ & $-1$ & $+1$ & $+1$ \\
+        $-1$ & $+1$ & $+1$ & $-1$ & $-1$ & $-1$ \\
+        $-1$ & $-1$ & $-1$ & $+1$ & $+1$ & $-1$ \\
+    };
+
+    % Tên các hàng (Lớp y_i)
+    \node[left=0.5cm of M-1-1, font=\bfseries] (L1) {Lớp $y_1$};
+    \node[left=0.5cm of M-2-1, font=\bfseries] (L2) {Lớp $y_2$};
+    \node[left=0.5cm of M-3-1, font=\bfseries] (L3) {Lớp $y_3$};
+    \node[left=0.5cm of M-4-1, font=\bf-4-1, font=\bfseries] (L4) {Lớp $y_4$};
+
+    % Tên các cột (Bộ phân loại nhị phân h_j)
+    \node[above=0.3cm of M-1-1, font=\footnotesize] {$h_1$};
+    \node[above=0.3cm of M-1-2, font=\footnotesize] {$h_2$};
+    \node[above=0.3cm of M-1-3, font=\footnotesize] {$h_3$};
+    \node[above=0.3cm of M-1-4, font=\footnotesize] {$h_4$};
+    \node[above=0.3cm of M-1-5, font=\footnotesize] {$h_5$};
+    \node[above=0.3cm of M-1-6, font=\footnotesize] {$h_6$};
+
+
+    % --- Test Sample Prediction Vector h(x) ---
+    \node[font=\bfseries\large, text=orange!80!black] at (7.5, 3.2) {Vector Dự đoán $\mathbf{h}(\mathbf{x})$};
+
+    \matrix[matrix of nodes, nodes={draw, rectangle, fill=orange!15, minimum width=0.9cm, minimum height=0.9cm, font=\bfseries}, 
+            column sep=2pt] (H) at (7.5, 2.3)
+    {
+        $-1$ & $+1$ & $+1$ & $+1$ & $-1$ & $+1$ \\
+    };
+    \node[above=0.2cm of H, font=\footnotesize\itshape] {Đầu ra từ 6 bộ phân loại nhị phân};
+
+
+    % --- Distance / Decoding Comparisons ---
+    \node[font=\bfseries, align=center, text=purple] at (7.5, 0.8) {Giải mã (Decoding): \\ Tính khoảng cách Hamming $L(M_i, \mathbf{h}(\mathbf{x}))$};
+
+    % Mũi tên so sánh từ h(x) đến các hàng M_i
+    \draw[->, thick, dashed, purple] (H.south) .. controls (7.5, 1.8) and (5.0, 1.9) .. (M-1-6.east)
+        node[midway, above, font=\footnotesize] {$d_H = 2$};
+        
+    \draw[->, thick, dashed, purple] (H.south) .. controls (7.5, 1.5) and (5.0, 1.2) .. (M-2-6.east)
+        node[midway, above, font=\footnotesize] {$d_H = 4$};
+        
+    \draw[->, thick, dashed, purple] (H.south) .. controls (7.5, 0.2) and (5.0, 0.4) .. (M-3-6.east)
+        node[midway, below, font=\footnotesize] {$\mathbf{d_H = 1}$ (Gần nhất $\rightarrow$ Chọn $y_3$)};
+        
+    \draw[->, thick, dashed, purple] (H.south) .. controls (7.5, -0.5) and (5.0, -0.4) .. (M-4-6.east)
+        node[midway, below, font=\footnotesize] {$d_H = 5$};
+
+
+    % --- Caption ---
+    \node[draw, fill=white, thick, align=center] at (4.5, -1.8) {
+        \textbf{Hình 1.4.3 (Hình 8.5 FML): Minh họa Mã sửa lỗi ECOC (Hard Decoding)} \\
+        Khoảng cách Hamming giữa $\mathbf{h}(\mathbf{x})$ và hàng $y_3$ là nhỏ nhất ($d_H=1$). \\
+        Dù bộ phân loại $h_1$ dự đoán sai (tạo ra lỗi), hệ thống vẫn tự động sửa lỗi và gán nhãn đúng $y_3$.
+    };
+
+\end{tikzpicture}
+\end{document}

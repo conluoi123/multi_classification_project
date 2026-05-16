@@ -20,23 +20,26 @@ from src.experiments.exp_direct_multiclass import (
     run_multiclass_svm_experiment,
     run_adaboost_mh_experiment
 )
+from src.experiments.exp_tikz_compiler import compile_tikz_diagrams
 
 def main():
     parser = argparse.ArgumentParser(description="Master CLI Runner - Đồ án 2 Phân loại Đa lớp (Nhóm 04)")
-    parser.add_argument('--module', type=str, choices=['binary_reductions', 'direct_multiclass'],
-                        help="Chạy toàn bộ thực nghiệm của một nhóm chiến lược.")
+    parser.add_argument('--module', type=str, choices=['binary_reductions', 'direct_multiclass', 'theory'],
+                        help="Chạy toàn bộ thực nghiệm của một nhóm chiến lược hoặc biên dịch lý thuyết TikZ.")
     parser.add_argument('--experiment', type=str, 
-                        choices=['visual', 'ovo', 'performance', 'calibration', 'complexity', 'tree', 'svm', 'adaboost'],
+                        choices=['visual', 'ovo', 'performance', 'calibration', 'complexity', 'tree', 'svm', 'adaboost', 'tikz'],
                         help="Chạy một kịch bản thực nghiệm cụ thể.")
     parser.add_argument('--all', action='store_true', help="Chạy toàn bộ tất cả thực nghiệm của dự án.")
+    parser.add_argument('--tikz', action='store_true', help="Biên dịch riêng các biểu đồ lý thuyết TikZ (LaTeX) vào figures/theory.")
     
     args = parser.parse_args()
     
-    if not (args.module or args.experiment or args.all):
+    if not (args.module or args.experiment or args.all or args.tikz):
         parser.print_help()
-        print("\n Ví dụ cách chạy:")
+        print("\n💡 Ví dụ cách chạy:")
         print("  python main.py --all")
         print("  python main.py --module binary_reductions")
+        print("  python main.py --tikz")
         print("  python main.py --experiment tree")
         sys.exit(0)
         
@@ -44,7 +47,7 @@ def main():
     
     if args.all or args.module == 'binary_reductions':
         print("\n" + "="*70)
-        print(" BẮT ĐẦU CHẠY THỰC NGHIỆM NHÓM 1: BINARY REDUCTIONS")
+        print("🚀 BẮT ĐẦU CHẠY THỰC NGHIỆM NHÓM 1: BINARY REDUCTIONS")
         print("="*70)
         run_visual_experiments()
         run_ovo_detailed_analysis()
@@ -54,11 +57,14 @@ def main():
         
     if args.all or args.module == 'direct_multiclass':
         print("\n" + "="*70)
-        print(" BẮT ĐẦU CHẠY THỰC NGHIỆM NHÓM 2: DIRECT MULTI-CLASS")
+        print("🚀 BẮT ĐẦU CHẠY THỰC NGHIỆM NHÓM 2: DIRECT MULTI-CLASS")
         print("="*70)
         run_decision_tree_experiment()
         run_multiclass_svm_experiment()
         run_adaboost_mh_experiment()
+        
+    if args.all or args.module == 'theory' or args.tikz or args.experiment == 'tikz':
+        compile_tikz_diagrams()
         
     if args.experiment:
         print("\n" + "="*70)
