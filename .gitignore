@@ -11,3 +11,9 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# markdown 
+PROJECT_CONTEXT.md
+task.md
+
+

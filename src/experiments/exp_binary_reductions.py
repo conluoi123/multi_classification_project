@@ -11,12 +11,10 @@ from sklearn.datasets import make_classification, make_blobs
 from sklearn.metrics import accuracy_score
 from scipy.stats import ttest_rel
 
-
-# 1. CẤU HÌNH HỆ THỐNG VÀ ĐƯỜNG DẪN
+# CẤU HÌNH HỆ THỐNG VÀ ĐƯỜNG DẪN
 logging.getLogger('matplotlib.font_manager').setLevel(logging.ERROR)
 warnings.filterwarnings('ignore')
 
-# Cấu hình Style biểu đồ
 try:
     plt.style.use('seaborn-v0_8-whitegrid')
 except:
@@ -24,34 +22,23 @@ except:
 plt.rcParams.update({'font.size': 10, 'figure.dpi': 120})
 np.random.seed(42)
 
-# Xác định đường dẫn gốc dự án 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-if os.path.basename(BASE_DIR) == 'src':
-    BASE_DIR = os.path.dirname(BASE_DIR)
-
-FIG_DIR = os.path.join(BASE_DIR, 'figures')
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+FIG_DIR = os.path.join(BASE_DIR, 'figures', 'binary_reductions')
 os.makedirs(FIG_DIR, exist_ok=True)
 
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-try:
-    from src.base.binary_svm import BinaryLinearSVM
-    from src.binary_reductions.ova_classifier import OneVsAllClassifier, CalibratedOneVsAllClassifier
-    from src.binary_reductions.ovo_classifier import OneVsOneClassifier
-    from src.binary_reductions.ecoc_classifier import ECOCClassifier
-    print(f"Hệ thống sẵn sàng. Thư mục lưu ảnh: {FIG_DIR}")
-except ImportError as e:
-    print(f"Lỗi cấu trúc thư mục hoặc Import: {e}")
-    sys.exit(1)
+from src.base.binary_svm import BinaryLinearSVM
+from src.binary_reductions.ova_classifier import OneVsAllClassifier, CalibratedOneVsAllClassifier
+from src.binary_reductions.ovo_classifier import OneVsOneClassifier
+from src.binary_reductions.ecoc_classifier import ECOCClassifier
 
-# 2. PHẦN 1: TRỰC QUAN HÓA MA TRẬN MÃ HÓA & RANH GIỚI QUYẾT ĐỊNH
 def run_visual_experiments():
     print("PHẦN 1: TRỰC QUAN HÓA MA TRẬN (OVA, OVO, ECOC) & RANH GIỚI QUYẾT ĐỊNH")
     print("="*65)
     k = 4
     
-    # 1.1. Vẽ bộ 3 Heatmap mã hóa (Yêu cầu của Tuấn)
     M_ova = np.eye(k) * 2 - 1
     M_ovo = np.zeros((k, k*(k-1)//2))
     col = 0
@@ -59,7 +46,7 @@ def run_visual_experiments():
         for j in range(i+1, k):
             M_ovo[i, col], M_ovo[j, col] = 1, -1
             col += 1
-    M_ecoc = np.random.choice([-1, 1], size=(k, 12)) # ECOC ngẫu nhiên c=12
+    M_ecoc = np.random.choice([-1, 1], size=(k, 12)) 
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     cmap = sns.color_palette("coolwarm", 3)
@@ -76,7 +63,6 @@ def run_visual_experiments():
     plt.savefig(os.path.join(FIG_DIR, 'all_coding_matrices.png'), dpi=300, bbox_inches='tight')
     plt.close()
 
-    # 1.2. Vẽ Ranh giới quyết định (Decision Boundaries)
     X_v, y_v = make_blobs(n_samples=300, centers=k, random_state=42, cluster_std=1.2)
     print("Đang huấn luyện mô hình để vẽ Ranh giới quyết định...")
     
@@ -95,13 +81,10 @@ def run_visual_experiments():
         ax.scatter(X_v[:, 0], X_v[:, 1], c=y_v, edgecolors='k', cmap='RdYlBu', s=30)
         ax.set_title(f"{title} Boundary", fontweight='bold')
         
-
     plt.savefig(os.path.join(FIG_DIR, 'decision_boundaries_all.png'), dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Đã lưu Heatmaps và Boundaries vào {FIG_DIR}\n")
 
-
-# 3. PHẦN 2: PHÂN TÍCH OVO CHUYÊN SÂU & CONFUSION MATRIX
 def run_ovo_detailed_analysis():
     print("PHẦN 2: PHÂN TÍCH OVO CHUYÊN SÂU (PAIRWISE ERRORS)")
     print("="*65)
@@ -112,7 +95,6 @@ def run_ovo_detailed_analysis():
 
     ovo = OneVsOneClassifier(base_estimator=BinaryLinearSVM(n_iters=500)).fit(X_train, y_train)
     
-    # Ma trận nhầm lẫn cặp (Pairwise Confusion Matrix)
     conf_matrix = ovo.pairwise_confusion_matrix(X_test, y_test)
     
     plt.figure(figsize=(8, 6))
@@ -125,21 +107,16 @@ def run_ovo_detailed_analysis():
     plt.savefig(os.path.join(FIG_DIR, 'ovo_pairwise_heatmap.png'), dpi=300, bbox_inches='tight')
     plt.close()
     
-    # Kiểm tra truy xuất bộ phân loại cặp
     try:
         clf_pair = ovo.get_pairwise_classifier(class_a=0, class_b=1)
         print(f"Truy xuất bộ phân loại (0 vs 1) thành công. Bias b = {clf_pair.b:.4f}")
     except: pass
     print(f"Đã lưu Ma trận nhầm lẫn OVO.\n")
 
-
-
-# 4. PHẦN 3: SO SÁNH HIỆU NĂNG TỔNG THỂ & ECOC DEPTH
 def run_performance_experiments():
     print("PHẦN 3: SO SÁNH HIỆU NĂNG & SỨC MẠNH ECOC")
     print("="*65)
     
-    # Tạo dữ liệu khó để thấy sự phân hóa
     X, y = make_classification(n_samples=1200, n_features=25, n_informative=20, 
                                n_classes=5, class_sep=0.8, random_state=42)
     X_train, X_test = X[:900], X[900:]
@@ -167,7 +144,6 @@ def run_performance_experiments():
     print("\nBảng kết quả hiệu năng:")
     print(df_res.to_string(index=False))
 
-    # Biểu đồ Accuracy
     plt.figure(figsize=(10, 5))
     ax = sns.barplot(x="Accuracy", y="Chiến lược", data=df_res, palette="viridis")
     plt.title("SO SÁNH ĐỘ CHÍNH XÁC (ACCURACY)", fontweight='bold')
@@ -178,7 +154,6 @@ def run_performance_experiments():
     plt.savefig(os.path.join(FIG_DIR, 'performance_comparison.png'), dpi=300, bbox_inches='tight')
     plt.close()
 
-    # Phân tích ECOC Depth (Chiều dài mã vs Accuracy)
     c_lengths = [5, 10, 20, 40, 60]
     acc_s = []
     for c in c_lengths:
@@ -197,12 +172,9 @@ def run_performance_experiments():
     plt.close()
     print(f"Đã lưu kết quả Hiệu năng và ECOC Depth.\n")
 
-
-# 5. PHẦN 4: KIỂM CHỨNG HIỆU CHUẨN (PLATT SCALING)
 def run_calibration_experiments():
     print("PHẦN 4: KIỂM CHỨNG VẤN ĐỀ HIỆU CHUẨN (CALIBRATION ISSUE)")
     print("="*65)
-    # Dữ liệu mất cân bằng nặng
     X_imb, y_imb = make_classification(n_samples=1000, n_features=20, n_informative=15, 
                                        n_classes=4, weights=[0.05, 0.1, 0.25, 0.6], random_state=42)
     X_tr, X_te = X_imb[:700], X_imb[700:]
@@ -228,12 +200,10 @@ def run_calibration_experiments():
     print(f" - OVA Thô: {acc_r:.4f} | OVA Calibrated: {acc_c:.4f}")
     print(f"Đã lưu ảnh so sánh Calibration.\n")
 
-# 6. PHẦN 5: ĐỘ PHỨC TẠP THỜI GIAN & KIỂM ĐỊNH GIẢ THUYẾT
 def run_complexity_and_stats():
     print("PHẦN 5: ĐỘ PHỨC TẠP (TABLE 8.1) & KIỂM ĐỊNH T-TEST")
     print("="*65)
     
-    # 6.1. Thời gian huấn luyện vs Số lớp k
     k_vals = [3, 5, 8, 12, 15]
     t_ova, t_ovo = [], []
     for k in k_vals:
@@ -256,7 +226,6 @@ def run_complexity_and_stats():
     plt.savefig(os.path.join(FIG_DIR, 'complexity_time.png'), dpi=300, bbox_inches='tight')
     plt.close()
 
-    # 6.2. Kiểm định T-test (10 runs)
     ova_accs, ovo_accs = [], []
     print("Đang chạy 10 thực nghiệm độc lập cho T-test...")
     for i in range(10):
@@ -280,14 +249,11 @@ def run_complexity_and_stats():
     plt.close()
     print(f"Đã lưu kết quả Complexity và T-test.\n")
 
-
 if __name__ == "__main__":
     start_total = time.time()
-    
-    run_visual_experiments()        # Ma trận màu & Boundary
-    run_ovo_detailed_analysis()      # Confusion Matrix OVO
-    run_performance_experiments()    # So sánh 4 mô hình & ECOC Depth
-    run_calibration_experiments()    # Platt Scaling
-    run_complexity_and_stats()       # Time & T-test
-    
+    run_visual_experiments()
+    run_ovo_detailed_analysis()
+    run_performance_experiments()
+    run_calibration_experiments()
+    run_complexity_and_stats()
     print(f"HOÀN THÀNH TOÀN BỘ THỰC NGHIỆM TRONG {time.time() - start_total:.2f} GIÂY.")
