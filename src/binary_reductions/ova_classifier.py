@@ -59,7 +59,6 @@ class OneVsAllClassifier:
             if hasattr(classifier, 'decision_function'):
                 scores[:, idx] = classifier.decision_function(X)
             else:
-                # Fallback: dùng predict thay thế nếu không có decision_function
                 scores[:, idx] = classifier.predict(X).astype(float)
             
         return scores

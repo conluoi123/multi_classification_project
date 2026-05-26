@@ -64,11 +64,12 @@ Vì phần mở rộng của đồ án đánh mạnh vào mảng **Extreme Multi
 
 ## 3. Thành viên thực hiện (Nhóm 04)
 
+1. **Nguyễn Kim Quốc** - 23120347
+1. **Ngô Thị Thục Quyên** - 23120348
 1. **Cao Quốc Tuấn** - 23120390
-2. **[Tên Thành viên 2]** - [MSSV 2]
-3. **[Tên Thành viên 3]** - [MSSV 3]
+1. **Lục Hoàng Tuấn** - 23120393
+1. **Huỳnh Trọng Viên** - 23120403
 
-_(Vui lòng cập nhật thông tin thành viên 2 và 3)_
 
 ---
 
