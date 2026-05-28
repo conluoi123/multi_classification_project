@@ -1,0 +1,15 @@
+\section{Tổng quan bài toán phân loại đa lớp}
+
+Phân loại đa lớp (multi-class classification) là bài toán học có giám sát trong đó mỗi điểm dữ liệu $\bm{x}\in\mathcal{X}$ được gán đúng một nhãn thuộc tập $\mathcal{Y}=\{1,2,\ldots,k\}$, với $k>2$. Khác với phân loại nhị phân, mô hình phải so sánh đồng thời nhiều lớp và đưa ra quyết định cuối cùng dựa trên điểm số, xác suất hoặc cơ chế biểu quyết.
+
+Cần phân biệt hai thiết lập thường gặp:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Đơn nhãn (mono-label):} mỗi mẫu thuộc đúng một lớp, ví dụ phân loại ảnh chữ số từ 0 đến 9.
+  \item \textbf{Đa nhãn (multi-label):} mỗi mẫu có thể đồng thời thuộc nhiều lớp, ví dụ một văn bản vừa thuộc nhãn ``thể thao'' vừa thuộc nhãn ``sức khỏe''.
+\end{itemize}
+
+Các thách thức chính của phân loại đa lớp gồm chi phí tính toán tăng theo số lớp, mất cân bằng lớp, độ phức tạp của biên quyết định và khả năng tồn tại quan hệ phân cấp hoặc quan hệ đồ thị giữa các nhãn. Khi $k$ lớn, chiến lược học trực tiếp trên toàn bộ không gian nhãn thường gặp trở ngại về tối ưu và bộ nhớ, trong khi các chiến lược quy về nhiều bài toán nhị phân cần cơ chế tổng hợp dự đoán hiệu quả.
+
+\begin{notebox}
+Trong đồ án này, trọng tâm là cơ sở lý thuyết của phân loại đa lớp, các nhóm thuật toán không kết hợp và kết hợp, các tiến bộ gần đây cho bài toán nhãn cực lớn, cùng một thiết kế demo thực nghiệm để so sánh các hướng tiếp cận.
+\end{notebox}

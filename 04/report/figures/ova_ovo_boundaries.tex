@@ -1,0 +1,34 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \begin{scope}[shift={(-3,0)}]
+    \node[align=center, font=\bfseries] at (0,3.0) {One-vs-All\\$k=3$ bộ phân loại};
+    \draw[thick, gray!35] (-2.2,-2.2) rectangle (2.2,2.2);
+    \foreach \p in {(0,1.65),(-0.35,1.35),(0.35,1.35),(-0.15,1.0),(0.25,1.95)} {\fill[blue] \p circle (2pt);}
+    \foreach \p in {(-1.55,-1.1),(-1.25,-1.45),(-1.85,-0.85),(-1.35,-0.7),(-1.7,-1.75)} {\fill[red] \p circle (2pt);}
+    \foreach \p in {(1.55,-1.1),(1.25,-1.45),(1.85,-0.85),(1.35,-0.7),(1.7,-1.75)} {\fill[green!70!black] \p circle (2pt);}
+    \node[font=\bfseries, text=blue, fill=white] at (0.0,2.0) {A};
+    \node[font=\bfseries, text=red, fill=white] at (-1.55,-1.95) {B};
+    \node[font=\bfseries, text=green!70!black, fill=white] at (1.55,-1.95) {C};
+    \draw[very thick, blue, dashed] (-1.9,0.45) -- (1.9,0.45);
+    \draw[very thick, red, dashed] (-0.35,-2.0) -- (-0.85,0.85);
+    \draw[very thick, green!70!black, dashed] (0.35,-2.0) -- (0.85,0.85);
+    \node[blue, font=\scriptsize, fill=white] at (1.35,0.72) {A vs rest};
+    \node[red, font=\scriptsize, fill=white] at (-1.15,0.45) {B vs rest};
+    \node[green!70!black, font=\scriptsize, fill=white] at (1.15,0.45) {C vs rest};
+  \end{scope}
+  \begin{scope}[shift={(3,0)}]
+    \node[align=center, font=\bfseries] at (0,3.0) {One-vs-One\\$k(k-1)/2=3$ bộ phân loại};
+    \draw[thick, gray!35] (-2.2,-2.2) rectangle (2.2,2.2);
+    \foreach \p in {(0,1.65),(-0.35,1.35),(0.35,1.35),(-0.15,1.0),(0.25,1.95)} {\fill[blue] \p circle (2pt);}
+    \foreach \p in {(-1.55,-1.1),(-1.25,-1.45),(-1.85,-0.85),(-1.35,-0.7),(-1.7,-1.75)} {\fill[red] \p circle (2pt);}
+    \foreach \p in {(1.55,-1.1),(1.25,-1.45),(1.85,-0.85),(1.35,-0.7),(1.7,-1.75)} {\fill[green!70!black] \p circle (2pt);}
+    \node[font=\bfseries, text=blue, fill=white] at (0.0,2.0) {A};
+    \node[font=\bfseries, text=red, fill=white] at (-1.55,-1.95) {B};
+    \node[font=\bfseries, text=green!70!black, fill=white] at (1.55,-1.95) {C};
+    \draw[very thick, purple, dashed] (-1.8,0.75) -- (0.6,-0.55);
+    \draw[very thick, orange!90!black, dashed] (1.8,0.75) -- (-0.6,-0.55);
+    \draw[very thick, teal, dashed] (0,-2.0) -- (0,0.45);
+    \node[purple, font=\scriptsize, fill=white] at (-1.15,0.95) {A vs B};
+    \node[orange!90!black, font=\scriptsize, fill=white] at (1.15,0.95) {A vs C};
+    \node[teal, font=\scriptsize, fill=white] at (0.55,-0.35) {B vs C};
+  \end{scope}
+\end{tikzpicture}

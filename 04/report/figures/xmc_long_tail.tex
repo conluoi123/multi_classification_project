@@ -1,0 +1,16 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \node[align=center, font=\bfseries] at (4.6,4.85) {Phân phối đuôi dài của nhãn};
+  \draw[->, thick] (0,0) -- (9.25,0) node[right] {Chỉ số nhãn};
+  \draw[->, thick] (0,0) -- (0,4.35) node[above] {Tần suất};
+  \fill[blue!10] (0.25,4.0) .. controls (0.8,1.05) and (2.4,0.45) .. (8.6,0.12) -- (8.6,0) -- (0.25,0) -- cycle;
+  \draw[very thick, blue] (0.25,4.0) .. controls (0.8,1.05) and (2.4,0.45) .. (8.6,0.12);
+  \draw[dashed, thick, red] (3.05,0) -- (3.05,4.05);
+  \node[draw, rounded corners, fill=white, align=center, font=\scriptsize, inner sep=1.5pt, text width=1.75cm] (headnote) at (2.0,3.75) {Head labels\\xuất hiện thường xuyên};
+  \draw[->, thick, blue!60!black] (headnote.south west) -- (0.55,3.55);
+  \node[draw, rounded corners, fill=white, align=center, text=red!75!black, font=\scriptsize, inner sep=1.5pt, text width=1.8cm] at (6.7,2.75) {Tail labels\\nhiều nhãn hiếm};
+  \draw[<->, red!70!black, thick] (3.25,1.45) -- (8.6,1.45) node[midway, above, fill=white, font=\scriptsize, inner sep=1pt] {phần lớn không gian nhãn};
+  \node[left, font=\scriptsize] at (0,4.0) {$10^4$};
+  \node[left, font=\scriptsize] at (0,2.0) {$10^2$};
+  \node[left, font=\scriptsize] at (0,0.1) {$10^0$};
+  \node[below, font=\scriptsize] at (8.6,0) {325K};
+\end{tikzpicture}

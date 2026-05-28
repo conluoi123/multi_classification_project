@@ -1,0 +1,12 @@
+\begin{tikzpicture}[x=8cm,y=7cm,>=Stealth,font=\small]
+  \draw[step=0.2, gray!20, thin] (0,0) grid (1,0.6);
+  \draw[->, thick] (0,0) -- (1.23,0) node[right] {$p$};
+  \draw[->, thick] (0,0) -- (0,0.68) node[above] {$F(p)$};
+  \foreach \x in {0,0.2,0.4,0.5,0.6,0.8,1.0} {\draw[thick] (\x,0) -- (\x,-0.015) node[below, font=\scriptsize] {\x};}
+  \foreach \y in {0,0.2,0.4,0.6} {\draw[thick] (0,\y) -- (-0.012,\y) node[left, font=\scriptsize] {\y};}
+  \draw[thick, black, densely dotted] (0,0) -- (0.5,0.5) -- (1,0);
+  \draw[very thick, red, domain=0:1, samples=100] plot (\x,{2*\x*(1-\x)});
+  \draw[very thick, blue, dashed, domain=0.0001:0.9999, samples=100] plot (\x,{-0.5*(\x*ln(\x)/ln(2)+(1-\x)*ln(1-\x)/ln(2))});
+  \node[draw, fill=white, anchor=north west, font=\scriptsize, align=left, inner sep=1.5pt] at (1.04,0.56) {\tikz\draw[very thick, red] (0,0)--(0.24,0); Gini\\\tikz\draw[very thick, blue, dashed] (0,0)--(0.24,0); Entropy $\times0.5$\\\tikz\draw[thick, black, densely dotted] (0,0)--(0.24,0); Misclassification};
+  \node[font=\footnotesize, align=center, fill=white] at (0.5,0.665) {Cực đại tại $p=0.5$};
+\end{tikzpicture}

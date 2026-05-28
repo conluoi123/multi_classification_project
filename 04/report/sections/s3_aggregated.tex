@@ -1,0 +1,281 @@
+\section{Nhóm thuật toán kết hợp}
+
+\subsection{Động lực}
+
+Thuật toán kết hợp (aggregated algorithms) giải quyết phân loại đa lớp bằng cách quy bài toán ban đầu về nhiều bài toán nhị phân, sau đó tổng hợp đầu ra của các bộ phân loại con. Cách tiếp cận này tận dụng được các thuật toán nhị phân đã phát triển mạnh, đồng thời linh hoạt hơn khi thay đổi bộ học nền \cite{dietterich1995}.
+
+\subsection{One-vs-All}
+
+One-vs-All (OVA), còn gọi là One-vs-Rest, huấn luyện $k$ bộ phân loại nhị phân. Với lớp $l$, bộ phân loại $h_l$ xem các mẫu thuộc lớp $l$ là dương và tất cả mẫu còn lại là âm:
+\[
+  y_i^{(l)}=
+  \begin{cases}
+    +1, & y_i=l,\\
+    -1, & y_i\neq l.
+  \end{cases}
+\]
+Sau khi huấn luyện, mỗi mô hình trả về điểm số $f_l(\bm{x})$. Quy tắc dự đoán là
+\[
+  h_{\text{OVA}}(\bm{x})=\arg\max_{l\in\mathcal{Y}} f_l(\bm{x}).
+\]
+
+\begin{algorithm}[H]
+\caption{Huấn luyện One-vs-All}
+\KwIn{Tập huấn luyện $S=\{(\bm{x}_i,y_i)\}_{i=1}^{m}$, tập nhãn $\mathcal{Y}$}
+\KwOut{$k$ bộ phân loại nhị phân $f_1,\ldots,f_k$}
+\For{$l=1$ \KwTo $k$}{
+  Tạo nhãn nhị phân $y_i^{(l)}=+1$ nếu $y_i=l$, ngược lại $-1$\;
+  Huấn luyện bộ phân loại $f_l$ trên $\{(\bm{x}_i,y_i^{(l)})\}_{i=1}^{m}$\;
+}
+\end{algorithm}
+
+Ví dụ với bốn lớp Táo, Cam, Chuối và Nho, OVA huấn luyện bốn mô hình: Táo-vs-còn lại, Cam-vs-còn lại, Chuối-vs-còn lại và Nho-vs-còn lại. Nếu một mẫu mới nhận điểm số lần lượt $(0.2,0.8,0.1,0.4)$ thì mô hình dự đoán lớp Cam.
+
+Ưu điểm của OVA là đơn giản, dễ cài đặt và chỉ cần $k$ mô hình. Chi phí dự đoán là $O(kc_t)$ nếu $c_t$ là chi phí đánh giá một bộ phân loại nhị phân. Tuy nhiên, mỗi bài toán nhị phân thường mất cân bằng nghiêm trọng vì một lớp phải đối đầu với toàn bộ các lớp còn lại. Ngoài ra, điểm số giữa các bộ phân loại độc lập có thể không được hiệu chỉnh cùng thang đo, dẫn đến trường hợp nhiều mô hình cùng tự tin hoặc tất cả đều kém tự tin.
+
+Để giảm hạn chế này, có thể dùng class weight, hiệu chỉnh xác suất bằng Platt scaling/isotonic regression, hoặc chọn ngưỡng riêng cho từng lớp trên validation set.
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{\input{figures/ova_ovo_boundaries}}
+\caption{Minh họa cách OVA và OVO tạo các ranh giới nhị phân khác nhau trong bài toán đa lớp.}
+\label{fig:ova-ovo-boundaries}
+\end{figure}
+
+
+\subsection{One-vs-One}
+
+One-vs-One (OVO) huấn luyện một bộ phân loại cho mỗi cặp lớp, do đó cần
+\[
+  \binom{k}{2}=\frac{k(k-1)}{2}
+\]
+mô hình nhị phân. Bộ phân loại $h_{ll'}$ chỉ dùng các mẫu thuộc hai lớp $l$ và $l'$. Khi dự đoán, mỗi mô hình bỏ phiếu cho một trong hai lớp và lớp có nhiều phiếu nhất được chọn:
+\[
+  h_{\text{OVO}}(\bm{x})=\arg\max_{l\in\mathcal{Y}}V_l(\bm{x}).
+\]
+
+Với $k=4$ lớp trái cây gồm Táo, Cam, Chuối và Nho, OVO cần sáu bộ phân loại. Bảng dưới minh họa các bài toán nhị phân tương ứng.
+
+\begin{table}[H]
+\centering
+\caption{Ví dụ các bộ phân loại OVO cho bốn lớp}
+\begin{tabular}{lll}
+\toprule
+\textbf{Cặp lớp} & \textbf{Bộ phân loại} & \textbf{Dữ liệu huấn luyện} \\
+\midrule
+Táo--Cam & $h_{12}$ & Chỉ mẫu Táo và Cam \\
+Táo--Chuối & $h_{13}$ & Chỉ mẫu Táo và Chuối \\
+Táo--Nho & $h_{14}$ & Chỉ mẫu Táo và Nho \\
+Cam--Chuối & $h_{23}$ & Chỉ mẫu Cam và Chuối \\
+Cam--Nho & $h_{24}$ & Chỉ mẫu Cam và Nho \\
+Chuối--Nho & $h_{34}$ & Chỉ mẫu Chuối và Nho \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Giả sử các trận đấu cho số phiếu lần lượt là Táo: 1, Cam: 3, Chuối: 0, Nho: 2. Khi đó
+\[
+  h_{\text{OVO}}(\bm{x})=\arg\max\{1,3,0,2\}=2,
+\]
+và mẫu được dự đoán là Cam.
+
+\begin{proposition}[Chặn lỗi OVO]
+Giả sử lỗi tổng quát hóa của mọi bộ phân loại cặp không vượt quá $\epsilon$. Khi đó lỗi của bộ phân loại OVO thỏa
+\[
+  R(h_{\text{OVO}})\leq (k-1)\epsilon.
+\]
+\end{proposition}
+
+\begin{proof}
+Nếu OVO phân loại sai một mẫu có nhãn đúng $l^*$, thì lớp $l^*$ không thể thắng tất cả các trận đấu với các lớp còn lại. Vì vậy tồn tại ít nhất một bộ phân loại cặp liên quan đến $l^*$ dự đoán sai. Áp dụng union bound trên $k-1$ cặp liên quan đến $l^*$ cho ta kết quả.
+\end{proof}
+
+
+\begin{expandbox}
+\subsection*{Chứng minh tính chặt của giới hạn lỗi OVO}
+
+Mệnh đề trên cho thấy nếu mọi bộ phân loại nhị phân trong OVO có sai số tổng quát hóa không vượt quá $\epsilon$, thì sai số của hệ OVO không vượt quá $(k-1)\epsilon$. Chặn này xuất phát từ bất đẳng thức Boole (union bound):
+\[
+  \mathbb{P}\left(\bigcup_{j=2}^{k}A_j\right)
+  \leq \sum_{j=2}^{k}\mathbb{P}(A_j),
+\]
+trong đó $A_j$ là biến cố bộ phân loại liên quan đến lớp đúng và lớp $j$ dự đoán sai. Union bound đạt dấu bằng khi các biến cố $A_j$ xung khắc từng đôi một. Ta xây dựng một ví dụ để cho thấy chặn $(k-1)\epsilon$ là chặt.
+
+\paragraph{Bước 1: Thiết lập phân phối.}
+Xét bài toán có $k$ lớp $\mathcal{Y}=\{1,2,\ldots,k\}$ và giả sử mọi điểm dữ liệu đều có nhãn đúng là lớp 1, tức
+\[
+  \mathbb{P}(y=1)=1.
+\]
+Phân hoạch không gian đặc trưng $\mathcal{X}$ thành $k$ vùng rời nhau
+\[
+  \mathcal{X}=\bigcup_{j=1}^{k}R_j,
+  \qquad R_i\cap R_j=\varnothing\quad (i\neq j),
+\]
+với xác suất
+\[
+  \mathbb{P}(\bm{x}\in R_j)=\epsilon,
+  \qquad j=2,\ldots,k,
+\]
+và
+\[
+  \mathbb{P}(\bm{x}\in R_1)=1-(k-1)\epsilon.
+\]
+Điều kiện này hợp lệ khi $(k-1)\epsilon\leq 1$.
+
+\paragraph{Bước 2: Định nghĩa các bộ phân loại cặp.}
+Với mỗi bộ phân loại $h_{1j}$ phân biệt lớp đúng 1 và lớp sai $j$ ($j\geq 2$), đặt
+\[
+  h_{1j}(\bm{x})=
+  \begin{cases}
+    j, & \bm{x}\in R_j,\\
+    1, & \bm{x}\notin R_j.
+  \end{cases}
+\]
+Vì nhãn đúng luôn là 1, bộ $h_{1j}$ chỉ sai trên vùng $R_j$. Do đó
+\[
+  R(h_{1j})=\mathbb{P}(\bm{x}\in R_j)=\epsilon.
+\]
+Với các bộ phân loại giữa hai lớp sai $a,b\geq 2$, định nghĩa sao cho nếu $\bm{x}\in R_a$ thì bộ phân loại bầu cho $a$, còn nếu $\bm{x}\in R_b$ thì bầu cho $b$. Cách định nghĩa ngoài hai vùng này có thể chọn tùy ý vì không ảnh hưởng đến lập luận chính.
+
+\paragraph{Bước 3: Phân tích biểu quyết OVO.}
+Nếu $\bm{x}\in R_1$, mọi bộ $h_{1j}$ đều bầu cho lớp 1. Khi đó lớp 1 nhận $k-1$ phiếu và OVO dự đoán đúng.
+
+Nếu $\bm{x}\in R_j$ với $j\geq 2$, bộ $h_{1j}$ bầu cho lớp $j$. Ngoài ra, với mọi $l\notin\{1,j\}$, bộ $h_{lj}$ cũng bầu cho lớp $j$ theo thiết kế trên. Vì vậy lớp $j$ nhận tổng cộng
+\[
+  1+(k-2)=k-1
+\]
+phiếu và thắng biểu quyết. Tuy nhiên, nhãn đúng vẫn là lớp 1, nên OVO dự đoán sai trên toàn bộ vùng $R_j$.
+
+\paragraph{Bước 4: Tính sai số OVO.}
+Hệ OVO chỉ sai trên hợp của các vùng $R_2,\ldots,R_k$. Vì các vùng này rời nhau từng đôi một,
+\[
+  R(h_{\text{OVO}})
+  =\mathbb{P}\left(\bigcup_{j=2}^{k}R_j\right)
+  =\sum_{j=2}^{k}\mathbb{P}(\bm{x}\in R_j)
+  =\sum_{j=2}^{k}\epsilon
+  =(k-1)\epsilon.
+\]
+
+Do đó tồn tại một phân phối và một họ bộ phân loại cặp sao cho mỗi bộ có sai số đúng bằng $\epsilon$, trong khi sai số của toàn hệ OVO đạt đúng $(k-1)\epsilon$. Vì vậy chặn trong Mệnh đề chặn lỗi OVO là chặt; không thể cải thiện chặn này nếu không bổ sung giả định mạnh hơn về phân phối dữ liệu hoặc tương quan giữa các lỗi cặp.
+\end{expandbox}
+
+Về chi phí, OVA cần $O(k)$ mô hình và dự đoán nhanh hơn. OVO cần $O(k^2)$ mô hình, nhưng mỗi mô hình được huấn luyện trên tập con nhỏ hơn. Với thuật toán nhị phân có chi phí $O(n^\alpha)$ và dữ liệu cân bằng, chi phí huấn luyện OVO là
+\[
+  T_{\text{OVO}}^{\text{train}}=\binom{k}{2}O\left(\left(\frac{2m}{k}\right)^\alpha\right)=O(k^{2-\alpha}m^\alpha),
+\]
+trong khi OVA có chi phí
+\[
+  T_{\text{OVA}}^{\text{train}}=kO(m^\alpha)=O(km^\alpha).
+\]
+Nếu $\alpha=2$, $k=10$ và $m=1000$, OVA cần xấp xỉ $10\times1000^2=10^7$ đơn vị tính toán, còn OVO cần $45\times200^2=1.8\times10^6$ đơn vị. Vì vậy OVO có thể thuận lợi khi thuật toán nền có chi phí siêu tuyến tính.
+
+Nhược điểm của OVO là chi phí lưu trữ và dự đoán tăng bậc hai theo số lớp. Ngoài ra, khi nhiều lớp nhận cùng số phiếu cao nhất, hệ thống cần cơ chế phá hòa, chẳng hạn chọn lớp có tổng margin lớn nhất hoặc dùng xác suất cặp để biểu quyết có trọng số.
+
+\subsubsection{Biểu quyết có trọng số}
+
+Thay vì mỗi bộ phân loại cặp chỉ đóng góp một phiếu, ta có thể gán trọng số theo độ tin cậy:
+\[
+  h_{\text{OVO-weighted}}(\bm{x})=\arg\max_{l\in\mathcal{Y}}\sum_{l'\neq l}w_{ll'}(\bm{x})\mathbb{1}[h_{ll'}(\bm{x})\text{ bầu cho }l].
+\]
+Một lựa chọn phổ biến là $w_{ll'}(\bm{x})=|f_{ll'}(\bm{x})|$, tức mô hình có margin lớn hơn được tin tưởng hơn. Nếu có xác suất cặp $p_{ll'}(\bm{x})$, ta có thể cộng các xác suất thay vì cộng phiếu cứng.
+
+\subsection{Error-Correcting Output Codes}
+
+Error-Correcting Output Codes (ECOC) tổng quát hóa OVA và OVO bằng cách gán mỗi lớp một mã nhị phân \cite{dietterich1995}. Gọi ma trận mã là
+\[
+  M\in\{-1,+1\}^{k\times c},
+\]
+trong đó hàng $M_l$ là mã của lớp $l$, còn cột $j$ định nghĩa một bài toán nhị phân bằng cách chia các lớp thành nhóm dương và âm.
+
+Với mỗi cột $j$, ta tạo bài toán nhị phân bằng cách gán nhãn
+\[
+  \tilde{y}_i^{(j)}=M_{y_i,j}\in\{-1,+1\}.
+\]
+Sau đó huấn luyện bộ phân loại $h_j:\mathcal{X}\to\{-1,+1\}$. Quy trình huấn luyện ECOC gồm ba bước: tái gán nhãn theo từng cột của ma trận mã, huấn luyện $c$ bộ phân loại nhị phân và giải mã dự đoán bằng khoảng cách Hamming:
+\[
+  h_{\text{ECOC}}(\bm{x})=\arg\min_{l\in\mathcal{Y}} d_H(M_l,\bm{h}(\bm{x})).
+\]
+Khoảng cách Hamming giữa hai vector nhị phân có thể viết là
+\[
+  d_H(\bm{u},\bm{v})=\frac{1}{2}\sum_{j=1}^{c}(1-u_jv_j).
+\]
+
+ECOC có khả năng sửa lỗi khi các codeword cách xa nhau. Nếu khoảng cách Hamming tối thiểu giữa hai mã là $d_{\min}$, hệ thống có thể sửa tối đa $\lfloor(d_{\min}-1)/2\rfloor$ lỗi bit trong điều kiện lý tưởng.
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{\input{figures/ecoc_decoding}}
+\caption{Minh họa ma trận mã ECOC và quy trình giải mã bằng khoảng cách Hamming.}
+\label{fig:ecoc-decoding}
+\end{figure}
+
+
+\begin{table}[H]
+\centering
+\caption{So sánh nhanh OVA, OVO và ECOC}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}>{\centering\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Phương pháp} & \textbf{Số mô hình} & \textbf{Ưu điểm} & \textbf{Hạn chế} \\
+\midrule
+OVA & $k$ & Đơn giản, dự đoán nhanh & Mất cân bằng lớp \\
+OVO & $k(k-1)/2$ & Mỗi bài toán nhỏ hơn & Lưu trữ/dự đoán tốn hơn \\
+ECOC & $c$ & Có khả năng sửa lỗi & Phụ thuộc thiết kế mã \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Có thể xem OVA và OVO là các trường hợp đặc biệt của ECOC. Với OVA, mỗi cột của ma trận mã tương ứng một lớp đối đầu với phần còn lại. Với OVO, mỗi cột chỉ phân biệt một cặp lớp, còn các lớp không thuộc cặp có thể được bỏ qua trong biến thể mã tam phân $\{-1,0,+1\}$.
+\subsection{Dự đoán có cấu trúc (Structured Prediction)}
+
+Trong nhiều ứng dụng thực tế như xử lý ngôn ngữ tự nhiên, thị giác máy tính hoặc sinh học tính toán, đầu ra của mô hình không chỉ là một nhãn đơn lẻ mà còn có cấu trúc nội tại phức tạp, chẳng hạn chuỗi, cây hoặc đồ thị. Ví dụ điển hình là gán nhãn từ loại (part-of-speech tagging), trong đó một câu gồm nhiều từ cần được gán một chuỗi nhãn tương ứng. Bài toán này có thể xem là một dạng tổng quát hóa của phân loại đa lớp, nhưng có ba thách thức riêng biệt:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Không gian nhãn lớn theo cấp số nhân:} nếu một câu có độ dài $n$ và tập nhãn từ loại là $\Sigma$, số chuỗi nhãn khả dĩ là $|\Sigma|^n$.
+  \item \textbf{Sự phụ thuộc giữa các cấu trúc con:} các thành phần trong đầu ra không độc lập; một số chuỗi nhãn có thể không phù hợp về mặt ngữ pháp hoặc ngữ cảnh.
+  \item \textbf{Hàm mất mát phức tạp:} hàm mất mát $L(y',y)$ giữa nhãn dự đoán $y'$ và nhãn đúng $y$ thường không phải mất mát 0--1, mà phụ thuộc vào từng cấu trúc con, chẳng hạn khoảng cách Hamming giữa hai chuỗi nhãn.
+\end{itemize}
+
+\paragraph{Hàm giả thuyết và đặc trưng chung.}
+Trong dự đoán có cấu trúc, đặc trưng thường phụ thuộc đồng thời vào đầu vào $\bm{x}$ và đầu ra $y$. Do đó, ta định nghĩa ánh xạ đặc trưng kết hợp
+\[
+  \Phi(\bm{x},y).
+\]
+Lớp giả thuyết thường dùng có dạng tuyến tính theo đặc trưng chung:
+\[
+  h(\bm{x})=\arg\max_{y\in\mathcal{Y}}\bm{w}^{\top}\Phi(\bm{x},y),
+\]
+trong đó $\bm{w}$ là vector trọng số cần học. Điểm khác biệt so với phân loại đa lớp thông thường là phép cực đại phải tìm trên không gian $\mathcal{Y}$ có cấu trúc và thường rất lớn.
+
+\paragraph{Maximum Margin Markov Networks (M3N).}
+M3N đưa hàm mất mát vào lề bằng cơ chế phạt cộng dồn (additive penalization). Với mỗi mẫu $(\bm{x}_i,y_i)$, một nhãn sai $y\neq y_i$ bị xem là vi phạm nghiêm trọng hơn nếu mất mát $L(y_i,y)$ lớn hơn. Một dạng mục tiêu có thể viết là
+\[
+  \min_{\bm{w}}\ \frac{1}{2}\|\bm{w}\|^2
+  + C\sum_{i=1}^{m}\max_{y\neq y_i}
+  \left[ L(y_i,y)-\bm{w}^{\top}\Delta\Phi_i(y) \right]_+,
+\]
+trong đó
+\[
+  \Delta\Phi_i(y)=\Phi(\bm{x}_i,y_i)-\Phi(\bm{x}_i,y),
+  \qquad [z]_+=\max(0,z).
+\]
+Khi cấu trúc nhãn có tính Markov, chẳng hạn chuỗi hoặc cây, và hàm mất mát có thể phân rã theo các thành phần cục bộ, bài toán suy luận trong bước tối ưu có thể được giải hiệu quả bằng quy hoạch động hoặc các thuật toán truyền tin trên đồ thị. Thiết lập này cũng kết hợp tự nhiên với các kernel trên cấu trúc rời rạc, chẳng hạn PDS kernel, khi cần đo độ tương đồng giữa các đối tượng có cấu trúc.
+
+\paragraph{SVMStruct.}
+SVMStruct sử dụng tư tưởng lề tối đa nhưng kết hợp mất mát theo cơ chế phạt nhân (multiplicative combination). Một dạng mục tiêu tương ứng là
+\[
+  \min_{\bm{w}}\ \frac{1}{2}\|\bm{w}\|^2
+  + C\sum_{i=1}^{m}\max_{y\neq y_i}
+  L(y_i,y)\left[1-\bm{w}^{\top}\Delta\Phi_i(y)\right]_+.
+\]
+Do số lượng nhãn cấu trúc có thể rất lớn, số ràng buộc tiềm năng trong bài toán tối ưu cũng rất lớn. Vì vậy, SVMStruct thường được giải bằng chiến lược cutting-plane: ở mỗi vòng lặp, thuật toán tìm nhãn vi phạm mạnh nhất (most violating constraint) rồi thêm ràng buộc tương ứng vào tập đang xét.
+
+\paragraph{Conditional Random Fields (CRFs).}
+CRF là mô hình phổ biến cho dữ liệu chuỗi. Về mặt hình thức, mục tiêu của CRF gần với M3N nhưng thay toán tử cực đại cứng bằng hàm xấp xỉ trơn dạng log-sum-exp. Một dạng mục tiêu có điều chuẩn là
+\[
+  \min_{\bm{w}}\ \frac{1}{2}\|\bm{w}\|^2
+  + C\sum_{i=1}^{m}\log\sum_{y\in\mathcal{Y}}
+  \exp\left( L(y_i,y)-\bm{w}^{\top}\Delta\Phi_i(y) \right).
+\]
+Cách làm này cho phép tối ưu trơn hơn so với hard-max, đồng thời vẫn khai thác được cấu trúc chuỗi thông qua các thuật toán suy luận như forward--backward hoặc Viterbi trong trường hợp phù hợp.
+
+\begin{notebox}
+Dự đoán có cấu trúc mở rộng phân loại đa lớp từ việc chọn một nhãn đơn sang việc chọn một đối tượng có cấu trúc. Trọng tâm của nhóm phương pháp này là thiết kế đặc trưng chung $\Phi(\bm{x},y)$, hàm mất mát cấu trúc $L(y',y)$ và thuật toán suy luận hiệu quả trên không gian đầu ra rất lớn.
+\end{notebox}

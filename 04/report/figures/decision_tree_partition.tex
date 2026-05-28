@@ -1,0 +1,30 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \node[align=center, font=\bfseries] at (-3.1, 4.75) {Kiến trúc cây quyết định};
+  \node[draw, thick, rectangle, rounded corners, fill=blue!10, minimum width=1.7cm, minimum height=0.7cm] (root) at (-3.1, 2.6) {$X_1 < a_1$};
+  \node[draw, thick, rectangle, rounded corners, fill=blue!10, minimum width=1.7cm, minimum height=0.7cm] (left1) at (-4.8, 1.1) {$X_2 < a_2$};
+  \node[draw, thick, rectangle, rounded corners, fill=blue!10, minimum width=1.7cm, minimum height=0.7cm] (right1) at (-1.4, 1.1) {$X_2 < a_3$};
+  \node[draw, thick, circle, fill=green!20, minimum size=0.72cm] (R1) at (-5.8, -0.55) {$R_1$};
+  \node[draw, thick, circle, fill=green!20, minimum size=0.72cm] (R2) at (-3.9, -0.55) {$R_2$};
+  \node[draw, thick, circle, fill=green!20, minimum size=0.72cm] (R3) at (-2.3, -0.55) {$R_3$};
+  \node[draw, thick, circle, fill=green!20, minimum size=0.72cm] (R4) at (-0.4, -0.55) {$R_4$};
+  \draw[->, thick] (root) -- (left1) node[pos=0.45, above left, font=\scriptsize, fill=white, inner sep=1pt] {Đúng};
+  \draw[->, thick] (root) -- (right1) node[pos=0.45, above right, font=\scriptsize, fill=white, inner sep=1pt] {Sai};
+  \draw[->, thick] (left1) -- (R1) node[pos=0.55, left, font=\scriptsize, fill=white, inner sep=1pt] {Đúng};
+  \draw[->, thick] (left1) -- (R2) node[pos=0.55, right, font=\scriptsize, fill=white, inner sep=1pt] {Sai};
+  \draw[->, thick] (right1) -- (R3) node[pos=0.55, left, font=\scriptsize, fill=white, inner sep=1pt] {Đúng};
+  \draw[->, thick] (right1) -- (R4) node[pos=0.55, right, font=\scriptsize, fill=white, inner sep=1pt] {Sai};
+
+  \node[align=center, font=\bfseries] at (3.3, 4.75) {Phân hoạch không gian đặc trưng};
+  \begin{scope}[shift={(1.0,-0.8)}]
+    \draw[thick] (0,0) rectangle (4.6,4.1);
+    \draw[->, thick] (0,0) -- (5.0,0) node[right] {$X_1$};
+    \draw[->, thick] (0,0) -- (0,4.55) node[above] {$X_2$};
+    \draw[very thick, blue] (2.15,0) -- (2.15,4.1) node[above, font=\footnotesize] {$a_1$};
+    \draw[very thick, red] (0,1.35) -- (2.15,1.35) node[midway, above, font=\footnotesize, fill=white, inner sep=1pt] {$a_2$};
+    \draw[very thick, purple] (2.15,2.85) -- (4.6,2.85) node[right, font=\footnotesize] {$a_3$};
+    \node[font=\bfseries\large, text=green!55!black] at (1.05,0.65) {$R_1$};
+    \node[font=\bfseries\large, text=green!55!black] at (1.05,2.7) {$R_2$};
+    \node[font=\bfseries\large, text=green!55!black] at (3.35,1.35) {$R_3$};
+    \node[font=\bfseries\large, text=green!55!black] at (3.35,3.45) {$R_4$};
+  \end{scope}
+\end{tikzpicture}

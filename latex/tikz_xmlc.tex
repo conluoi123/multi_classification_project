@@ -1,0 +1,180 @@
+\documentclass[tikz,border=10pt,multi=tikzpicture]{standalone}
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetikzlibrary{arrows.meta, calc, positioning, shapes.geometric, shapes.misc, decorations.pathreplacing}
+
+\begin{document}
+
+% =====================================================
+% 1. Thách thức cốt lõi: Phân phối nhãn "Đuôi dài" (Long-tail)
+% Nguồn: Bonsai
+% =====================================================
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+    \node[align=center, font=\bfseries\large] at (4, 5.5) {1. Phân phối "Đuôi dài" (Long-tail) của Nhãn};
+
+    % Axes
+    \draw[->, thick] (0,0) -- (8,0) node[right] {Chỉ số Nhãn (Label Index)};
+    \draw[->, thick] (0,0) -- (0,4.5) node[above] {Tần suất (Log-scale)};
+
+    % Long tail curve with fill
+    \fill[blue!10] (0.2, 4) .. controls (0.8, 0.8) and (2.5, 0.4) .. (7.5, 0.1) -- (7.5, 0) -- (0.2, 0) -- cycle;
+    \draw[very thick, blue] (0.2, 4) .. controls (0.8, 0.8) and (2.5, 0.4) .. (7.5, 0.1);
+
+    % Divider
+    \draw[dashed, thick, red] (2.5, 0) -- (2.5, 4);
+    
+    % Regions
+    \node[align=center] at (1.25, 2) {\textbf{Head Labels}\\(Thường xuyên)};
+    \node[align=center, text=red] at (5, 2.5) {\textbf{Tail Labels (Nhãn hiếm)}\\ > 50\% nhãn xuất hiện < 5 lần};
+    \draw[<->, red, thick] (2.5, 1.8) -- (7.5, 1.8);
+
+    % Annotations
+    \node[left] at (0, 4) {$10^4$};
+    \node[left] at (0, 2) {$10^2$};
+    \node[left] at (0, 0.1) {$10^0$};
+    \node[below] at (7.5, 0) {325K};
+
+    % Note
+    \node[draw, fill=white, thick, align=center, text width=8cm] at (4, -1.5) {
+        \textbf{Minh họa từ tập WikiLSHTC-325K}\\
+        Dữ liệu cực kỳ mất cân bằng (power-law distribution), khiến việc học các đặc trưng cho các nhãn hiếm (tail labels) trở nên vô cùng khó khăn.
+    };
+\end{tikzpicture}
+
+% =====================================================
+% 2. So sánh Cây đa phân (Bonsai) và Cây nhị phân (Parabel)
+% Nguồn: Bonsai
+% =====================================================
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+    \node[align=center, font=\bfseries\large] at (4, 4.5) {2. Phân hoạch Không gian: Parabel vs. Bonsai};
+
+    % Parabel
+    \node[align=center, font=\bfseries] at (1.5, 3) {Parabel\\(Phân đôi liên tục)};
+    \node[circle, draw, thick, fill=blue!20, minimum size=1.2cm] (p0) at (1.5, 1.5) {};
+    \node[circle, draw, thick, fill=blue!15, minimum size=0.8cm] (p1) at (0.5, 0) {};
+    \node[circle, draw, thick, fill=blue!15, minimum size=0.8cm] (p2) at (2.5, 0) {};
+    \node[circle, draw, thick, fill=blue!10, minimum size=0.4cm] (p3) at (0, -1.2) {};
+    \node[circle, draw, thick, fill=blue!10, minimum size=0.4cm] (p4) at (1, -1.2) {};
+    \node[circle, draw, thick, fill=blue!10, minimum size=0.4cm] (p5) at (2, -1.2) {};
+    \node[circle, draw, thick, fill=blue!10, minimum size=0.4cm] (p6) at (3, -1.2) {};
+    \draw[->, thick] (p0) -- (p1); \draw[->, thick] (p0) -- (p2);
+    \draw[->, thick] (p1) -- (p3); \draw[->, thick] (p1) -- (p4);
+    \draw[->, thick] (p2) -- (p5); \draw[->, thick] (p2) -- (p6);
+    
+    \node[align=center, text=blue!80!black] at (1.5, -2.2) {Cây nhị phân rất sâu\\Nguy cơ lỗi lan truyền cao};
+
+    % Separator
+    \draw[dashed, thick, gray] (4, 3.5) -- (4, -2.5);
+
+    % Bonsai
+    \node[align=center, font=\bfseries] at (6.5, 3) {Bonsai\\(Phân cụm đa dạng)};
+    \node[circle, draw, thick, fill=green!20, minimum size=1.2cm] (b0) at (6.5, 1.5) {};
+    \node[circle, draw, thick, fill=green!15, minimum size=0.9cm] (b1) at (4.8, 0) {};
+    \node[circle, draw, thick, fill=green!15, minimum size=0.5cm] (b2) at (6.5, 0) {};
+    \node[circle, draw, thick, fill=green!15, minimum size=0.7cm] (b3) at (8.2, 0) {};
+    \draw[->, thick] (b0) -- (b1); \draw[->, thick] (b0) -- (b2); \draw[->, thick] (b0) -- (b3);
+
+    \node[align=center, text=green!60!black] at (6.5, -2.2) {Cây đa phân nông, linh hoạt\\Giảm thiểu tối đa lỗi lan truyền};
+
+    % Note
+    \node[draw, fill=white, thick, align=center, text width=8cm] at (4, -3.5) {
+        \textbf{Giảm lan truyền lỗi (Error Propagation)}\\
+        Thay vì ép buộc chia đôi, Bonsai cho phép phân chia thành nhiều cụm có kích thước đa dạng dựa trên độ tương đồng thực tế của tập nhãn.
+    };
+\end{tikzpicture}
+
+% =====================================================
+% 3. Cơ chế Multi-label Attention (AttentionXML)
+% =====================================================
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+    \node[align=center, font=\bfseries\large] at (4, 5.5) {3. Mạng chú ý Đa nhãn (Multi-Label Attention)};
+
+    % Layers
+    \node[draw, thick, fill=gray!10, minimum width=6cm, minimum height=0.7cm] (text) at (4, -1) {Input: Văn bản gốc (Text)};
+    
+    \node[draw, thick, fill=blue!10, minimum width=6cm, minimum height=0.7cm] (emb) at (4, 0.2) {Trích xuất từ (Word Representation)};
+    
+    \node[draw, thick, fill=orange!10, minimum width=6cm, minimum height=0.7cm] (bilstm) at (4, 1.4) {BiLSTM (Đặc trưng ngữ cảnh 2 chiều)};
+    
+    \node[draw, thick, fill=purple!10, minimum width=7cm, minimum height=1.2cm, align=center] (att) at (4, 2.9) {Multi-Label Attention Layer \\ Tính toán hệ số chú ý $\alpha_{ij}$ độc lập cho từng nhãn $i$};
+    
+    \node[draw, thick, fill=green!10, minimum width=2.5cm, minimum height=0.7cm] (fc1) at (1.5, 4.4) {Dự đoán Nhãn $A$};
+    \node[draw, thick, fill=green!10, minimum width=2.5cm, minimum height=0.7cm] (fc2) at (6.5, 4.4) {Dự đoán Nhãn $B$};
+
+    % Arrows
+    \draw[->, thick] (text) -- (emb);
+    \draw[->, thick] (emb) -- (bilstm);
+    \draw[->, thick] (bilstm) -- (att);
+    \draw[->, thick] (att) -- (fc1) node[midway, left, font=\footnotesize] {Trọng số riêng cho $A$};
+    \draw[->, thick] (att) -- (fc2) node[midway, right, font=\footnotesize] {Trọng số riêng cho $B$};
+
+    % Note
+    \node[draw, fill=white, thick, align=center, text width=8cm] at (4, -2.5) {
+        \textbf{Cơ chế AttentionXML}\\
+        Mô hình tự động tập trung vào các cụm từ quan trọng nhất của văn bản tương ứng với từng nhãn cụ thể thay vì dùng một biểu diễn chung.
+    };
+\end{tikzpicture}
+
+% =====================================================
+% 4. Lấy mẫu tiêu cực động (LightXML)
+% =====================================================
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+    \node[align=center, font=\bfseries\large] at (4, 3.5) {4. Lấy mẫu tiêu cực động (Dynamic Negative Sampling)};
+
+    % Components
+    \node[draw, thick, fill=cyan!10, rectangle, rounded corners, minimum width=2.5cm, minimum height=1.5cm, align=center] (gen) at (1, 1) {Khối Gọi lại Nhãn\\(Generator /\\Label Recalling)};
+    
+    \node[draw, thick, fill=magenta!10, rectangle, rounded corners, minimum width=2.5cm, minimum height=1.5cm, align=center] (disc) at (7, 1) {Khối Xếp hạng\\(Discriminator /\\Label Ranking)};
+
+    % Center item
+    \node[draw, dashed, thick, fill=yellow!10, align=center] (candidates) at (4, 1) {Tập Nhãn Ứng Viên\\(Chứa Hard Negatives)};
+
+    % Flows
+    \draw[->, very thick, blue] (gen) -- (candidates) node[midway, above, font=\footnotesize] {Sinh nhãn "khó"};
+    \draw[->, very thick, blue] (candidates) -- (disc) node[midway, above, font=\footnotesize] {Lọc \& Xếp hạng};
+    
+    \draw[<-, thick, red, dashed] (gen.south) |- (4, -0.2) -| (disc.south) node[pos=0.25, below, font=\footnotesize] {Tối ưu hóa chung mạng hợp tác sinh - phân biệt};
+
+    % Note
+    \node[draw, fill=white, thick, align=center, text width=8cm] at (4, -1.8) {
+        \textbf{Đóng góp cốt lõi của LightXML}\\
+        Thay vì lấy mẫu ngẫu nhiên thủ công, Generator tự động liên tục sinh ra các nhãn nhiễu tinh vi để đánh lừa Discriminator, từ đó tăng độ chính xác.
+    };
+\end{tikzpicture}
+
+% =====================================================
+% 5. Zero-shot LLMs (ICXML)
+% =====================================================
+\begin{tikzpicture}[scale=1.2, >=Stealth, font=\small]
+    \node[align=center, font=\bfseries\large] at (4, 4.5) {5. Khung làm việc Zero-Shot Generate-Rerank cho LLMs};
+
+    % Nodes
+    \node[draw, thick, fill=gray!10, minimum width=2cm, minimum height=0.8cm, align=center] (input) at (0, 2) {Văn bản đầu vào};
+    
+    \node[draw, thick, fill=blue!10, minimum width=2.5cm, minimum height=1.2cm, align=center] (gen) at (3.5, 3) {Giai đoạn 1:\\Sinh ví dụ\\(In-context Learning)};
+    
+    \node[draw, thick, fill=orange!10, minimum width=2.5cm, minimum height=1.2cm, align=center] (rerank) at (3.5, 1) {Giai đoạn 2:\\Xếp hạng lại\\(Rerank bằng Prompt)};
+    
+    \node[draw, thick, fill=green!10, minimum width=2cm, minimum height=0.8cm, align=center] (space) at (7, 3) {Không gian\\Nhãn rút gọn};
+
+    \node[draw, thick, fill=red!10, minimum width=2cm, minimum height=0.8cm, align=center] (output) at (7, 1) {Dự đoán Cuối cùng};
+
+    % Arrows
+    \draw[->, thick] (input) |- (gen.west);
+    \draw[->, thick] (input) |- (rerank.west);
+    
+    \draw[->, thick] (gen) -- (space) node[midway, above, font=\footnotesize] {Thu gọn};
+    \draw[->, thick] (space) -- (rerank) node[midway, right, font=\footnotesize] {Ứng viên};
+    \draw[->, thick] (rerank) -- (output);
+
+    % Note
+    \node[draw, fill=white, thick, align=center, text width=8cm] at (4, -1) {
+        \textbf{Hướng tiếp cận ICXML}\\
+        Không cần huấn luyện. Giai đoạn 1 thu gọn không gian nhãn khổng lồ xuống tập ứng viên nhỏ. Giai đoạn 2 yêu cầu LLM phân tích chuyên sâu để ra quyết định.
+    };
+\end{tikzpicture}
+
+\end{document}

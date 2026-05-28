@@ -1,0 +1,24 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \node[font=\bfseries, text=blue!80!black] at (1.5,3.28) {Ma trận mã $M$};
+  \matrix[matrix of nodes, nodes={draw, rectangle, minimum size=0.72cm, font=\bfseries}, column sep=1.5pt, row sep=1.5pt] (M) at (1.5,0.80) {
+    $+1$ & $-1$ & $+1$ & $+1$ & $-1$ & $+1$ \\
+    $+1$ & $+1$ & $-1$ & $-1$ & $+1$ & $+1$ \\
+    $-1$ & $+1$ & $+1$ & $-1$ & $-1$ & $-1$ \\
+    $-1$ & $-1$ & $-1$ & $+1$ & $+1$ & $-1$ \\
+  };
+  \foreach \r/\name in {1/y_1,2/y_2,3/y_3,4/y_4} {\node[left=0.35cm of M-\r-1, yshift=-0.08cm, font=\scriptsize\bfseries] {Lớp $\name$};}
+  \foreach \c in {1,...,6} {\node[above=0.2cm of M-1-\c, font=\scriptsize] {$h_\c$};}
+
+  \node[font=\bfseries, text=orange!80!black] at (7.6,3.4) {Dự đoán $\mathbf{h}(\mathbf{x})$};
+  \matrix[matrix of nodes, nodes={draw, rectangle, fill=orange!15, minimum width=0.72cm, minimum height=0.72cm, font=\bfseries}, column sep=1.5pt] (H) at (7.6,2.35) {
+    $-1$ & $+1$ & $+1$ & $+1$ & $-1$ & $+1$ \\
+  };
+  \node[draw, rounded corners, fill=purple!7, align=center, text=purple, font=\footnotesize, minimum width=4.2cm] (decode) at (7.6,0.95) {Tính $d_H(M_i,\mathbf{h}(\mathbf{x}))$\\và chọn hàng gần nhất};
+
+  \draw[->, thick, dashed, purple] (H.west) .. controls (5.8,2.2) and (5.0,2.35) .. (M-1-6.east) node[midway, above, font=\scriptsize, fill=white] {$d_H=2$};
+  \draw[->, thick, dashed, purple] (H.west) .. controls (5.8,1.85) and (5.0,1.65) .. (M-2-6.east) node[midway, above, font=\scriptsize, fill=white] {$d_H=4$};
+  \draw[->, very thick, dashed, green!60!black] (decode.west) .. controls (5.6,0.55) and (5.0,0.95) .. (M-3-6.east) node[midway, below, font=\scriptsize, fill=white] {$d_H=1$};
+  \draw[->, thick, dashed, purple] (decode.west) .. controls (5.7,0.0) and (5.0,0.25) .. (M-4-6.east) node[midway, below, font=\scriptsize, fill=white] {$d_H=5$};
+
+  \node[draw, fill=green!8, rounded corners, align=center, font=\footnotesize] at (7.6,-0.65) {Gần nhất với lớp $y_3$\\$\Rightarrow$ dự đoán $y_3$};
+\end{tikzpicture}

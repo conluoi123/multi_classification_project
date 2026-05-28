@@ -1,0 +1,12 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \node[align=center, font=\bfseries] at (4,5.75) {AttentionXML: attention riêng cho từng nhãn};
+  \node[draw, thick, fill=gray!10, minimum width=5.8cm, minimum height=0.62cm] (text) at (4,0) {Văn bản đầu vào};
+  \node[draw, thick, fill=blue!10, minimum width=5.8cm, minimum height=0.62cm] (emb) at (4,1.05) {Word representation};
+  \node[draw, thick, fill=orange!10, minimum width=5.8cm, minimum height=0.62cm] (bilstm) at (4,2.1) {BiLSTM};
+  \node[draw, thick, fill=purple!10, minimum width=6.6cm, minimum height=0.95cm, align=center] (att) at (4,3.35) {Multi-label attention\\hệ số $\alpha_{ij}$ phụ thuộc từng nhãn};
+  \node[draw, thick, fill=green!10, minimum width=2.25cm, minimum height=0.66cm] (fc1) at (1.55,5.05) {Nhãn A};
+  \node[draw, thick, fill=green!10, minimum width=2.25cm, minimum height=0.66cm] (fc2) at (6.45,5.05) {Nhãn B};
+  \draw[->, thick] (text)--(emb); \draw[->, thick] (emb)--(bilstm); \draw[->, thick] (bilstm)--(att);
+  \draw[->, thick] (att)--(fc1) node[pos=0.56, left, font=\scriptsize, fill=white, inner sep=1pt] {trọng số A};
+  \draw[->, thick] (att)--(fc2) node[pos=0.56, right, font=\scriptsize, fill=white, inner sep=1pt] {trọng số B};
+\end{tikzpicture}

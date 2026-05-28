@@ -1,0 +1,666 @@
+\section{Cơ sở lý thuyết}
+
+\subsection{Phát biểu bài toán}
+
+Xét không gian đầu vào $\mathcal{X}$ và tập nhãn hữu hạn $\mathcal{Y}=\{1,2,\ldots,k\}$ với $k>2$. Tập huấn luyện gồm $m$ mẫu độc lập cùng phân phối
+\[
+  S=\{(\bm{x}_i,y_i)\}_{i=1}^{m},\qquad \bm{x}_i\in\mathcal{X},\ y_i\in\mathcal{Y}.
+\]
+Mục tiêu là học một hàm phân loại $g:\mathcal{X}\to\mathcal{Y}$ sao cho sai số kỳ vọng
+\[
+  R(g)=\mathbb{P}_{(\bm{x},y)\sim\mathcal{D}}[g(\bm{x})\neq y]
+\]
+nhỏ trên dữ liệu chưa thấy. Khác với phân loại nhị phân, mô hình đa lớp phải đồng thời so sánh nhiều nhãn, do đó cách biểu diễn đầu ra và cách thiết kế hàm mất mát đóng vai trò rất quan trọng.
+
+Trong thiết lập \textbf{đơn nhãn}, mỗi mẫu thuộc đúng một lớp. Trong thiết lập \textbf{đa nhãn}, mỗi mẫu có thể ứng với một tập nhãn $Y\subseteq\mathcal{Y}$. Phần lý thuyết dưới đây tập trung vào đơn nhãn, sau đó các mở rộng đa nhãn và nhãn cực lớn được trình bày ở các phần sau.
+
+\subsection{Hàm điểm số và quy tắc quyết định}
+
+Một cách mô hình hóa phổ biến là sử dụng hàm điểm số
+\[
+  h: \mathcal{X}\times\mathcal{Y}\to\mathbb{R},
+\]
+trong đó $h(\bm{x},y)$ biểu thị mức độ tin cậy rằng mẫu $\bm{x}$ thuộc lớp $y$. Quy tắc dự đoán là
+\[
+  \hat{y}=g_h(\bm{x})=\arg\max_{y\in\mathcal{Y}} h(\bm{x},y).
+\]
+Nếu tồn tại nhiều nhãn đạt cùng điểm số lớn nhất, mô hình cần một quy tắc phá hòa, ví dụ chọn nhãn có xác suất hậu nghiệm lớn hơn, chọn nhãn xuất hiện nhiều hơn trên validation set, hoặc chọn nhãn có chỉ số nhỏ nhất để bảo đảm tính xác định.
+
+Với mô hình tuyến tính, một dạng thường gặp là
+\[
+  h(\bm{x},y)=\bm{w}_y^\top\phi(\bm{x}),
+\]
+trong đó $\phi(\bm{x})$ là ánh xạ đặc trưng và $\bm{w}_y$ là vector trọng số của lớp $y$. Khi dùng kernel, tích vô hướng $\phi(\bm{x})^\top\phi(\bm{x}')$ được thay bằng hàm kernel $K(\bm{x},\bm{x}')$.
+
+
+\subsection{Lề đa lớp}
+
+Trong phân loại đa lớp, một giả thuyết không nhất thiết dự đoán nhãn trực tiếp. Thay vào đó, giả thuyết được biểu diễn thông qua hàm tính điểm
+\[
+  h:\mathcal{X}\times\mathcal{Y}\to\mathbb{R},
+\]
+trong đó $h(\bm{x},y)$ là điểm số mà mô hình gán cho nhãn $y$ tại điểm dữ liệu $\bm{x}$. Nhãn dự đoán được chọn theo quy tắc điểm số lớn nhất:
+\[
+  g_h(\bm{x})=\arg\max_{y\in\mathcal{Y}}h(\bm{x},y).
+\]
+
+Với mẫu đã gán nhãn $(\bm{x},y)$, lề đa lớp của $h$ tại $(\bm{x},y)$ được định nghĩa là
+\[
+  \rho_h(\bm{x},y)=h(\bm{x},y)-\max_{y'\neq y}h(\bm{x},y').
+\]
+Thành phần $\max_{y'\neq y}h(\bm{x},y')$ là điểm số của nhãn sai nguy hiểm nhất, tức nhãn sai cạnh tranh mạnh nhất với nhãn đúng. Vì vậy, lề đo khoảng cách giữa điểm của nhãn đúng và điểm của đối thủ mạnh nhất.
+
+Từ định nghĩa trên, ta có nhận xét quan trọng:
+\[
+  g_h(\bm{x})\neq y \quad \Longleftrightarrow \quad \rho_h(\bm{x},y)\leq 0,
+\]
+nếu quy tắc phá hòa được xem là bất lợi cho nhãn đúng. Khi $\rho_h(\bm{x},y)>0$, mô hình phân loại đúng; khi $\rho_h(\bm{x},y)$ càng lớn, mô hình càng tự tin vì nhãn đúng tách xa mọi nhãn sai.
+
+\begin{notebox}
+Lề đa lớp khác với lề nhị phân ở chỗ nó không chỉ so sánh với một ranh giới quyết định duy nhất, mà so sánh nhãn đúng với toàn bộ $k-1$ nhãn còn lại. Đây là lý do các giới hạn lý thuyết cho phân loại đa lớp thường phụ thuộc vào số lớp $k$.
+\end{notebox}
+
+Ví dụ, giả sử một mẫu có nhãn đúng là lớp 2 và mô hình cho điểm số
+\[
+  (h(\bm{x},1),h(\bm{x},2),h(\bm{x},3),h(\bm{x},4))=(0.4,1.2,0.9,0.1).
+\]
+Khi đó
+\[
+  \rho_h(\bm{x},2)=1.2-\max\{0.4,0.9,0.1\}=1.2-0.9=0.3.
+\]
+Mẫu được phân loại đúng nhưng lề chỉ bằng $0.3$, nghĩa là lớp 3 vẫn là đối thủ khá gần. Nếu điểm của lớp 3 tăng nhẹ vượt quá $1.2$, mô hình sẽ phân loại sai.
+
+\subsection{Hàm mất mát lề kinh nghiệm}
+
+Sai số huấn luyện 0--1 chỉ quan tâm mô hình đúng hay sai:
+\[
+  \widehat{R}_{0/1}(h)=\frac{1}{m}\sum_{i=1}^{m}\mathbb{1}\bigl[\rho_h(\bm{x}_i,y_i)\leq 0\bigr].
+\]
+Tuy nhiên, đại lượng này không phân biệt mẫu đúng với lề lớn và mẫu đúng sát biên quyết định. Để phân tích khả năng tổng quát hóa, ta dùng hàm mất mát lề với một mức lề mong muốn $\rho>0$.
+
+Hàm mất mát lề $\Phi_\rho$ được định nghĩa bởi
+\[
+  \Phi_\rho(t)=
+  \begin{cases}
+    1, & t\leq 0,\\
+    1-\dfrac{t}{\rho}, & 0<t<\rho,\\
+    0, & t\geq \rho.
+  \end{cases}
+\]
+Hàm này có ba vùng ý nghĩa:
+\begin{itemize}[leftmargin=2em]
+  \item nếu $t\leq 0$, mẫu bị phân loại sai hoặc hòa với nhãn sai nên bị phạt tối đa;
+  \item nếu $0<t<\rho$, mẫu đúng nhưng chưa đủ tự tin nên bị phạt một phần;
+  \item nếu $t\geq\rho$, mẫu đúng với lề đủ lớn nên không bị phạt.
+\end{itemize}
+
+Sai số lề kinh nghiệm của $h$ trên tập huấn luyện $S=\{(\bm{x}_i,y_i)\}_{i=1}^{m}$ là
+\[
+  \widehat{R}_{\rho}(h)=\frac{1}{m}\sum_{i=1}^{m}\Phi_\rho\bigl(\rho_h(\bm{x}_i,y_i)\bigr).
+\]
+Do $\Phi_\rho(t)\geq\mathbb{1}[t\leq 0]$, ta có
+\[
+  \widehat{R}_{0/1}(h)\leq \widehat{R}_{\rho}(h).
+\]
+Nói cách khác, hàm mất mát lề là một chặn trên của sai số huấn luyện. Nó phạt cả các điểm bị phân loại sai và các điểm phân loại đúng nhưng có confidence nhỏ hơn hoặc bằng ngưỡng lề mong muốn.
+
+Một tính chất quan trọng là $\Phi_\rho$ có hằng số Lipschitz bằng $1/\rho$:
+\[
+  |\Phi_\rho(a)-\Phi_\rho(b)|\leq \frac{1}{\rho}|a-b|.
+\]
+Tính chất này cho phép chuyển bài toán chặn sai số thật sang chặn độ phức tạp Rademacher của lớp hàm lề. Khi $\rho$ lớn, hệ số Lipschitz nhỏ hơn, nhưng điều kiện để mẫu có mất mát bằng 0 cũng khắt khe hơn. Vì vậy tồn tại đánh đổi giữa việc chọn lề lớn và sai số lề kinh nghiệm.
+
+
+\subsection{Độ phức tạp Rademacher và hàm max}
+
+Độ phức tạp Rademacher đo khả năng một lớp hàm khớp với nhiễu ngẫu nhiên. Với lớp hàm $\mathcal{F}$ và mẫu $S=(\bm{x}_1,\ldots,\bm{x}_m)$, độ phức tạp Rademacher kinh nghiệm là
+\[
+  \widehat{\mathfrak{R}}_S(\mathcal{F})=\frac{1}{m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{f\in\mathcal{F}}\sum_{i=1}^{m}\sigma_i f(\bm{x}_i)\right],
+\]
+trong đó $\sigma_i$ là các biến Rademacher độc lập, nhận giá trị $+1$ hoặc $-1$ với xác suất bằng nhau. Nếu $\widehat{\mathfrak{R}}_S(\mathcal{F})$ lớn, lớp hàm đủ linh hoạt để khớp nhiễu tốt, do đó nguy cơ overfitting cao hơn.
+
+Trong phân tích đa lớp, lề chứa toán tử
+\[
+  \max_{y'\neq y}h(\bm{x},y'),
+\]
+nên ta cần một bổ đề để chặn độ phức tạp của lớp hàm tạo bởi phép lấy cực đại.
+
+\begin{proposition}[Bổ đề 8.1: Độ phức tạp Rademacher của hàm max]
+Cho $\ell$ tập giả thuyết $\mathcal{F}_1,\ldots,\mathcal{F}_\ell$ và
+\[
+  \mathcal{G}=\left\{\max\{h_1,\ldots,h_\ell\}:h_j\in\mathcal{F}_j,
+  \ j\in[1,\ell]\right\}.
+\]
+Với mọi tập mẫu $S$ kích thước $m$, ta có
+\[
+  \widehat{\mathfrak{R}}_S(\mathcal{G})
+  \leq \sum_{j=1}^{\ell}\widehat{\mathfrak{R}}_S(\mathcal{F}_j).
+\]
+\end{proposition}
+
+\begin{proof}  
+\textbf{Bước 1: Chứng minh cho trường hợp $\ell=2$.}
+Với mọi $h_1\in\mathcal{F}_1$ và $h_2\in\mathcal{F}_2$, ta dùng hằng đẳng thức
+\[
+  \max\{h_1,h_2\}=\frac{1}{2}\left(h_1+h_2+|h_1-h_2|\right).
+\]
+Thay vào định nghĩa độ phức tạp Rademacher kinh nghiệm và dùng tính cộng dưới của supremum, ta có
+\begin{align*}
+  \widehat{\mathfrak{R}}_S(\mathcal{G})
+  &=\frac{1}{m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_1,h_2}\sum_{i=1}^{m}\sigma_i
+  \max\{h_1(\bm{x}_i),h_2(\bm{x}_i)\}\right]\\
+  &\leq \frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_1\in\mathcal{F}_1}\sum_{i=1}^{m}\sigma_i h_1(\bm{x}_i)\right]
+  +\frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_2\in\mathcal{F}_2}\sum_{i=1}^{m}\sigma_i h_2(\bm{x}_i)\right]\\
+  &\quad +\frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_1\in\mathcal{F}_1,h_2\in\mathcal{F}_2}
+  \sum_{i=1}^{m}\sigma_i |(h_1-h_2)(\bm{x}_i)|\right]\\
+  &=\frac{1}{2}\widehat{\mathfrak{R}}_S(\mathcal{F}_1)
+  +\frac{1}{2}\widehat{\mathfrak{R}}_S(\mathcal{F}_2)+T,
+\end{align*}
+trong đó
+\[
+  T=\frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_1,h_2}
+  \sum_{i=1}^{m}\sigma_i |(h_1-h_2)(\bm{x}_i)|\right].
+\]
+
+\textbf{Bước 2: Áp dụng bổ đề co Talagrand.}
+Hàm $u\mapsto |u|$ là hàm 1-Lipschitz và thỏa $|0|=0$. Theo bổ đề co Talagrand,
+\[
+  T\leq \frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_1,h_2}\sum_{i=1}^{m}\sigma_i(h_1-h_2)(\bm{x}_i)\right].
+\]
+Tiếp tục dùng tính cộng dưới của supremum:
+\begin{align*}
+  T
+  &\leq \frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_1\in\mathcal{F}_1}\sum_{i=1}^{m}\sigma_i h_1(\bm{x}_i)\right]
+  +\frac{1}{2m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{h_2\in\mathcal{F}_2}\sum_{i=1}^{m}(-\sigma_i)h_2(\bm{x}_i)\right].
+\end{align*}
+Vì $(\sigma_1,\ldots,\sigma_m)$ và $(-\sigma_1,\ldots,-\sigma_m)$ có cùng phân phối, nên
+\[
+  T\leq \frac{1}{2}\widehat{\mathfrak{R}}_S(\mathcal{F}_1)
+  +\frac{1}{2}\widehat{\mathfrak{R}}_S(\mathcal{F}_2).
+\]
+Cộng các hạng tử lại, ta thu được
+\[
+  \widehat{\mathfrak{R}}_S(\mathcal{G})
+  \leq \widehat{\mathfrak{R}}_S(\mathcal{F}_1)
+  +\widehat{\mathfrak{R}}_S(\mathcal{F}_2).
+\]
+
+\textbf{Bước 3: Mở rộng bằng quy nạp.}
+Với $\ell>2$, viết
+\[
+  \max\{h_1,\ldots,h_\ell\}
+  =\max\{h_1,\max(h_2,\ldots,h_\ell)\}.
+\]
+Áp dụng kết quả $\ell=2$ cho $\mathcal{F}_1$ và lớp hàm
+\[
+  \mathcal{G}_{2:\ell}=\{\max(h_2,\ldots,h_\ell):h_j\in\mathcal{F}_j,\ j=2,\ldots,\ell\},
+\]
+rồi dùng giả thiết quy nạp cho $\mathcal{G}_{2:\ell}$, ta có
+\[
+  \widehat{\mathfrak{R}}_S(\mathcal{G})
+  \leq \widehat{\mathfrak{R}}_S(\mathcal{F}_1)
+  +\widehat{\mathfrak{R}}_S(\mathcal{G}_{2:\ell})
+  \leq \sum_{j=1}^{\ell}\widehat{\mathfrak{R}}_S(\mathcal{F}_j).
+\]
+Bổ đề được chứng minh.
+\end{proof}
+
+\subsection{Giới hạn tổng quát hóa}
+
+Gọi $R(h)=\mathbb{P}[g_h(\bm{x})\neq y]$ là sai số thật và $\widehat{R}_\rho(h)$ là sai số lề kinh nghiệm. Đặt $\Pi_1(\mathcal{H})$ là lớp hàm tọa độ thu được khi cố định một nhãn:
+\[
+  \Pi_1(\mathcal{H})=\{\bm{x}\mapsto h(\bm{x},y):h\in\mathcal{H},\ y\in\mathcal{Y}\}.
+\]
+Ký hiệu $\mathfrak{R}_m(\cdot)$ là độ phức tạp Rademacher kỳ vọng theo mẫu kích thước $m$.
+
+\begin{theorem}[Định lý 8.1: Giới hạn lề phân loại đa lớp]
+Với mọi $\rho>0$ và $\delta>0$, với xác suất ít nhất $1-\delta$, bất đẳng thức sau đúng đồng thời với mọi $h\in\mathcal{H}$:
+\[
+  R(h)\leq \widehat{R}_{\rho}(h)
+  +\frac{2k^2}{\rho}\mathfrak{R}_m(\Pi_1(\mathcal{H}))
+  +\sqrt{\frac{\log(1/\delta)}{2m}}.
+\]
+\end{theorem}
+
+\begin{proof}
+\textbf{Bước 1: Chặn sai số bằng hàm mất mát lề.}
+Gọi $\widetilde{\mathcal{H}}$ là lớp hàm lề
+\[
+  \widetilde{\mathcal{H}}=\{(\bm{x},y)\mapsto \rho_h(\bm{x},y):h\in\mathcal{H}\}.
+\]
+Vì hàm chỉ thị sai số luôn bị chặn bởi hàm mất mát lề,
+\[
+  \mathbb{1}[g_h(\bm{x})\neq y]
+  \leq \Phi_\rho(\rho_h(\bm{x},y)),
+\]
+áp dụng định lý tổng quát hóa dựa trên Rademacher cho lớp $\Phi_\rho\circ\widetilde{\mathcal{H}}$ cho ta, với xác suất ít nhất $1-\delta$,
+\[
+  R(h)\leq \mathbb{E}[\Phi_\rho(\rho_h(\bm{x},y))]
+  \leq \widehat{R}_\rho(h)
+  +2\mathfrak{R}_m(\Phi_\rho\circ\widetilde{\mathcal{H}})
+  +\sqrt{\frac{\log(1/\delta)}{2m}}.
+\]
+Do $\Phi_\rho$ là hàm $(1/\rho)$-Lipschitz, bổ đề co Talagrand cho
+\[
+  \mathfrak{R}_m(\Phi_\rho\circ\widetilde{\mathcal{H}})
+  \leq \frac{1}{\rho}\mathfrak{R}_m(\widetilde{\mathcal{H}}).
+\]
+Vì vậy nhiệm vụ còn lại là chặn $\mathfrak{R}_m(\widetilde{\mathcal{H}})$.
+
+\textbf{Bước 2: Phân rã độ phức tạp Rademacher của lớp lề.}
+Với mẫu $S=\{(\bm{x}_i,y_i)\}_{i=1}^{m}$, ta có thể viết độ phức tạp của lớp lề theo tổng trên các nhãn đúng bằng hàm chỉ thị:
+\[
+  \mathfrak{R}_m(\widetilde{\mathcal{H}})
+  \leq \frac{1}{m}\sum_{y\in\mathcal{Y}}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i
+  \rho_h(\bm{x}_i,y)\mathbb{1}_{\{y=y_i\}}\right].
+\]
+Dùng mẹo đổi biến $\mathbb{1}_{\{y=y_i\}}=(\epsilon_i+1)/2$ với $\epsilon_i\in\{-1,+1\}$ và tính chất $\sigma_i$ có cùng phân phối với $\sigma_i\epsilon_i$, ta thu được chặn đơn giản hơn:
+\[
+  \mathfrak{R}_m(\widetilde{\mathcal{H}})
+  \leq \frac{1}{m}\sum_{y\in\mathcal{Y}}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i
+  \rho_h(\bm{x}_i,y)\right].
+\]
+
+\textbf{Bước 3: Khai triển lề và áp dụng Bổ đề 8.1.}
+Thay định nghĩa lề
+\[
+  \rho_h(\bm{x}_i,y)=h(\bm{x}_i,y)-\max_{y'\neq y}h(\bm{x}_i,y')
+\]
+vào biểu thức trên. Với mỗi nhãn $y$, dùng tính cộng dưới của supremum và việc $-\sigma_i$ có cùng phân phối với $\sigma_i$, ta được
+\begin{align*}
+  &\frac{1}{m}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i\rho_h(\bm{x}_i,y)\right]\\
+  &\leq \frac{1}{m}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i h(\bm{x}_i,y)\right]
+  +\frac{1}{m}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i\max_{y'\neq y}h(\bm{x}_i,y')\right].
+\end{align*}
+Hạng thứ nhất được chặn bởi $\mathfrak{R}_m(\Pi_1(\mathcal{H}))$. Với hạng thứ hai, lớp hàm max gồm $k-1$ lớp tọa độ khác nhau. Áp dụng Bổ đề 8.1, ta có chặn
+\[
+  \frac{1}{m}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i\max_{y'\neq y}h(\bm{x}_i,y')\right]
+  \leq (k-1)\mathfrak{R}_m(\Pi_1(\mathcal{H})).
+\]
+Do đó, với mỗi $y$,
+\[
+  \frac{1}{m}\mathbb{E}_{S,\bm{\sigma}}
+  \left[\sup_{h\in\mathcal{H}}\sum_{i=1}^{m}\sigma_i\rho_h(\bm{x}_i,y)\right]
+  \leq k\mathfrak{R}_m(\Pi_1(\mathcal{H})).
+\]
+Cuối cùng, vì phải cộng trên toàn bộ $k$ nhãn $y\in\mathcal{Y}$, ta nhận được
+\[
+  \mathfrak{R}_m(\widetilde{\mathcal{H}})
+  \leq k^2\mathfrak{R}_m(\Pi_1(\mathcal{H})).
+\]
+Thay chặn này vào kết quả của Bước 1:
+\[
+  R(h)
+  \leq \widehat{R}_\rho(h)
+  +2\cdot\frac{1}{\rho}\cdot k^2\mathfrak{R}_m(\Pi_1(\mathcal{H}))
+  +\sqrt{\frac{\log(1/\delta)}{2m}},
+\]
+tức là
+\[
+  R(h)\leq \widehat{R}_{\rho}(h)
+  +\frac{2k^2}{\rho}\mathfrak{R}_m(\Pi_1(\mathcal{H}))
+  +\sqrt{\frac{\log(1/\delta)}{2m}}.
+\]
+Định lý được chứng minh.
+\end{proof}
+
+Giới hạn trên thể hiện đánh đổi quan trọng: chọn $\rho$ lớn làm giảm hệ số $1/\rho$ trong thành phần độ phức tạp, nhưng lại khiến $\widehat{R}_\rho(h)$ có xu hướng tăng vì yêu cầu lề trên tập huấn luyện khắt khe hơn. Hệ số $k^2$ cho thấy khi số lớp tăng, bảo đảm lý thuyết yếu đi nhanh nếu không khai thác cấu trúc nhãn hoặc chiến lược giảm bài toán.
+
+\paragraph{Hệ quả 8.1 cho giả thuyết kernel}
+
+Xét lớp giả thuyết kernel $\mathcal{H}_{K,p}$ với
+\[
+  h(\bm{x},y)=\langle \bm{w}_y,\Phi(\bm{x})\rangle_{\mathcal{H}},
+\]
+ma trận trọng số $W=(\bm{w}_1,\ldots,\bm{w}_k)$ thỏa
+\[
+  \|W\|_{\mathcal{H},p}\leq \Lambda,
+\]
+và kernel bị chặn
+\[
+  K(\bm{x},\bm{x})=\|\Phi(\bm{x})\|_{\mathcal{H}}^2\leq r^2.
+\]
+Khi đó Hệ quả 8.1 phát biểu rằng với xác suất ít nhất $1-\delta$,
+\[
+  R(h)\leq \widehat{R}_\rho(h)
+  +2k^2\sqrt{\frac{r^2\Lambda^2}{m\rho^2}}
+  +\sqrt{\frac{\log(1/\delta)}{2m}}.
+\]
+
+\begin{proof}
+Hệ quả này thu được bằng cách kết hợp Định lý 8.1 với chặn Rademacher cho lớp tọa độ $\Pi_1(\mathcal{H}_{K,p})$. Ta chứng minh
+\[
+  \mathfrak{R}_m(\Pi_1(\mathcal{H}_{K,p}))
+  \leq \sqrt{\frac{r^2\Lambda^2}{m}}.
+\]
+
+\textbf{Bước 1: Định mức vector trọng số.}
+Từ điều kiện $\|W\|_{\mathcal{H},p}\leq\Lambda$, suy ra chuẩn của từng vector trọng số riêng lẻ cũng bị chặn:
+\[
+  \|\bm{w}_y\|_{\mathcal{H}}\leq \Lambda,
+  \qquad \forall y\in[1,k].
+\]
+
+\textbf{Bước 2: Dùng bất đẳng thức Cauchy--Schwarz.}
+Với một nhãn cố định $y$, độ phức tạp Rademacher kinh nghiệm của lớp hàm $\bm{x}\mapsto\langle\bm{w}_y,\Phi(\bm{x})\rangle$ thỏa
+\begin{align*}
+  \widehat{\mathfrak{R}}_S(\Pi_1(\mathcal{H}_{K,p}))
+  &=\frac{1}{m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{\|\bm{w}_y\|_{\mathcal{H}}\leq\Lambda}
+  \sum_{i=1}^{m}\sigma_i\langle\bm{w}_y,\Phi(\bm{x}_i)\rangle_{\mathcal{H}}\right]\\
+  &=\frac{1}{m}\mathbb{E}_{\bm{\sigma}}
+  \left[\sup_{\|\bm{w}_y\|_{\mathcal{H}}\leq\Lambda}
+  \left\langle\bm{w}_y,\sum_{i=1}^{m}\sigma_i\Phi(\bm{x}_i)\right\rangle_{\mathcal{H}}\right]\\
+  &\leq \frac{\Lambda}{m}\mathbb{E}_{\bm{\sigma}}
+  \left[\left\|\sum_{i=1}^{m}\sigma_i\Phi(\bm{x}_i)\right\|_{\mathcal{H}}\right].
+\end{align*}
+
+\textbf{Bước 3: Dùng Jensen và khai triển bình phương.}
+Theo bất đẳng thức Jensen,
+\begin{align*}
+  \widehat{\mathfrak{R}}_S(\Pi_1(\mathcal{H}_{K,p}))
+  &\leq \frac{\Lambda}{m}
+  \left(\mathbb{E}_{\bm{\sigma}}
+  \left[\left\|\sum_{i=1}^{m}\sigma_i\Phi(\bm{x}_i)\right\|_{\mathcal{H}}^2\right]\right)^{1/2}.
+\end{align*}
+Khai triển bình phương:
+\begin{align*}
+  \mathbb{E}_{\bm{\sigma}}
+  \left[\left\|\sum_{i=1}^{m}\sigma_i\Phi(\bm{x}_i)\right\|_{\mathcal{H}}^2\right]
+  &=\mathbb{E}_{\bm{\sigma}}
+  \left[\sum_{i=1}^{m}\sum_{j=1}^{m}\sigma_i\sigma_j
+  \langle\Phi(\bm{x}_i),\Phi(\bm{x}_j)\rangle_{\mathcal{H}}\right]\\
+  &=\sum_{i=1}^{m}\|\Phi(\bm{x}_i)\|_{\mathcal{H}}^2,
+\end{align*}
+nhờ $\mathbb{E}[\sigma_i\sigma_j]=0$ khi $i\neq j$ và $\mathbb{E}[\sigma_i^2]=1$.
+
+\textbf{Bước 4: Ráp giới hạn kernel.}
+Do $K(\bm{x}_i,\bm{x}_i)=\|\Phi(\bm{x}_i)\|_{\mathcal{H}}^2\leq r^2$, ta có
+\[
+  \widehat{\mathfrak{R}}_S(\Pi_1(\mathcal{H}_{K,p}))
+  \leq \frac{\Lambda}{m}\left(\sum_{i=1}^{m}K(\bm{x}_i,\bm{x}_i)\right)^{1/2}
+  \leq \frac{\Lambda}{m}\sqrt{mr^2}
+  =\sqrt{\frac{r^2\Lambda^2}{m}}.
+\]
+Lấy kỳ vọng theo mẫu cho ta cùng chặn đối với $\mathfrak{R}_m(\Pi_1(\mathcal{H}_{K,p}))$. Thay trực tiếp vào Định lý 8.1:
+\[
+  R(h)\leq \widehat{R}_\rho(h)
+  +\frac{2k^2}{\rho}\sqrt{\frac{r^2\Lambda^2}{m}}
+  +\sqrt{\frac{\log(1/\delta)}{2m}},
+\]
+hay tương đương
+\[
+  R(h)\leq \widehat{R}_\rho(h)
+  +2k^2\sqrt{\frac{r^2\Lambda^2}{m\rho^2}}
+  +\sqrt{\frac{\log(1/\delta)}{2m}}.
+\]
+Hệ quả được chứng minh.
+\end{proof}
+
+
+\section{Các thuật toán không kết hợp}
+\label{sec:uncombined}
+
+Các thuật toán trong nhóm \textit{không kết hợp} (uncombined algorithms) được thiết kế trực tiếp cho bài toán phân loại đa lớp, thay vì quy về nhiều bài toán phân loại nhị phân rồi ghép lại. Toàn bộ thông tin về các lớp được xử lý chung trong một bài toán tối ưu duy nhất, điều này đặt chúng vào vị trí đối lập với các thuật toán tổng hợp sẽ trình bày ở phần sau. Ba đại diện tiêu biểu gồm Multi-class SVM, Multi-class Boosting và Decision Trees.
+
+\subsection{Multi-class SVM}
+\label{sssec:multiclass_svm}
+
+Multi-class SVM là mở rộng trực tiếp của SVM nhị phân dựa trên tư tưởng tối đa hóa lề. Thuật toán này liên hệ chặt chẽ với các giới hạn tổng quát hóa theo lề đã trình bày ở phần trước: nếu mô hình đạt lề lớn trên tập huấn luyện và norm của ma trận trọng số được kiểm soát, sai số tổng quát hóa có thể được chặn tốt hơn.
+
+Thay vì huấn luyện nhiều mô hình nhị phân độc lập, Multi-class SVM học đồng thời $k$ vector trọng số $\bm{w}_1,\bm{w}_2,\ldots,\bm{w}_k$, mỗi vector tương ứng với một lớp. Với ánh xạ đặc trưng $\Phi(\bm{x})$, điểm số của lớp $l$ được tính bởi
+\[
+  h(\bm{x},l)=\langle \bm{w}_l,\Phi(\bm{x})\rangle_{\mathcal{H}}.
+\]
+Nhãn dự đoán cho một điểm dữ liệu mới là lớp có điểm số lớn nhất:
+\[
+  g(\bm{x})=\arg\max_{l\in\mathcal{Y}}\langle \bm{w}_l,\Phi(\bm{x})\rangle_{\mathcal{H}}.
+\]
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{\input{figures/svm_margin}}
+\caption{Minh họa ranh giới quyết định và lề trong Multi-class SVM.}
+\label{fig:svm-margin}
+\end{figure}
+
+\paragraph{Xây dựng bài toán tối ưu:}
+Xuất phát từ cận tổng quát hóa dựa trên margin đã thiết lập, ta có thể rút ra một thuật toán học đa lớp cụ thể bằng cách tối thiểu hóa vế phải của bất đẳng thức đó. Với mỗi mẫu huấn luyện $(\bm{x}_i, y_i)$, ta định nghĩa biến bù (slack variable):
+\[
+    \xi_i = \max\!\bigl(1 - \bigl[\bm{w}_{y_i} \cdot \Phi(\bm{x}_i)
+            - \max_{y \neq y_i} \bm{w}_y \cdot \Phi(\bm{x}_i)\bigr],\; 0\bigr),
+    \quad \forall\, i \in [m].
+\]
+$\xi_i > 0$ khi điểm $\bm{x}_i$ bị phân loại sai hoặc đúng nhưng với margin nhỏ hơn $1$. Bài toán tối ưu SVM đa lớp khi đó được phát biểu như sau:
+
+\begin{equation}
+    \min_{W,\,\bm{\xi}}\quad
+    \frac{1}{2}\sum_{l=1}^{k}\|\bm{w}_l\|_{\mathcal{H}}^2 + C\sum_{i=1}^{m}\xi_i
+    \label{eq:svm_primal}
+\end{equation}
+\[
+    \text{s.t.}\quad
+    \langle \bm{w}_{y_i},\Phi(\bm{x}_i)\rangle_{\mathcal{H}} \;\geq\;
+    \langle \bm{w}_l,\Phi(\bm{x}_i)\rangle_{\mathcal{H}} + 1 - \xi_i,
+    \quad \forall\, i\in[m],\; \forall\, l \in \mathcal{Y}\setminus\{y_i\},
+\]
+và $\xi_i\geq 0,\ i=1,\ldots,m$.
+
+Ở đây $W = (\bm{w}_1,\ldots,\bm{w}_k)$ là ma trận các vector trọng số, $C > 0$ là tham số điều chỉnh sự đánh đổi giữa độ phức tạp của mô hình và sai số huấn luyện.
+
+\textbf{Ý nghĩa hình học.} Ràng buộc trong~\eqref{eq:svm_primal} yêu cầu điểm số (score) của lớp đúng $y_i$ phải cao hơn điểm số của \emph{bất kỳ} lớp sai $l$ một khoảng ít nhất bằng $1 - \xi_i$. Khi $\xi_i = 0$, mẫu nằm đúng phía và đủ xa khỏi ranh giới quyết định; khi $\xi_i > 0$, ràng buộc bị vi phạm và mô hình bị phạt tỉ lệ với $C\xi_i$.
+
+\paragraph{Liên hệ với hàm mất mát hinge đa lớp:}
+Với mỗi mẫu $(\bm{x}_i,y_i)$, hàm mất mát hinge đa lớp có dạng
+\[
+  \ell_i(W)=\max_{l\neq y_i}\left[1+\bigl\langle \bm{w}_l,\Phi(\bm{x}_i)\bigr\rangle
+  -\bigl\langle \bm{w}_{y_i},\Phi(\bm{x}_i)\bigr\rangle\right]_+.
+\]
+Biến slack $\xi_i$ trong bài toán primal chính là một chặn trên cho mất mát này. Vì thế bài toán SVM có thể hiểu là tối thiểu hóa regularized empirical risk:
+\[
+  \frac{1}{2}\|W\|_{\mathcal{H},2}^2+C\sum_{i=1}^{m}\ell_i(W).
+\]
+
+\paragraph{Bài toán đối ngẫu:}
+Bằng cách lập Lagrangian và áp dụng điều kiện KKT cho~\eqref{eq:svm_primal}, bài toán primal có thể được chuyển sang bài toán đối ngẫu thuần túy theo kernel $K$:
+\begin{equation}
+    \max_{\alpha \in \mathbb{R}^{m\times k}}\quad
+    \sum_{i=1}^{m} \alpha_i \cdot e_{y_i}
+    - \frac{1}{2}\sum_{i,j=1}^{m}(\alpha_i\cdot\alpha_j)\,K(\bm{x}_i,\bm{x}_j)
+    \label{eq:svm_dual}
+\end{equation}
+\[
+    \text{s.t.}\quad 0 \leq \alpha_i \leq C,\quad \alpha_i\cdot\mathbf{1}=0,
+    \quad \forall\,i\in[m],
+\]
+trong đó $\alpha\in\mathbb{R}^{m\times k}$ là ma trận nhân tử Lagrange, $\alpha_i$ là hàng thứ $i$ của $\alpha$, và $e_l$ là vector đơn vị thứ $l$ trong $\mathbb{R}^k$.
+Nhờ đó, Multi-class SVM có thể dùng kernel trick để học biên quyết định phi tuyến mà không cần biểu diễn tường minh $\Phi(\bm{x})$.
+
+\paragraph{Nhận xét về độ phức tạp:}
+Cả hai bài toán nguyên thủy và đối ngẫu đều là bài toán \textit{Quy hoạch Toàn phương} (Quadratic Program -- QP), tổng quát hóa trực tiếp SVM nhị phân. Tuy nhiên, số ràng buộc tỷ lệ với $m(k-1)=\Omega(mk)$. Khi $k$ lớn, bài toán có thể rất tốn kém về mặt tính toán. Trong thực tiễn, người ta thường áp dụng các chiến lược phân rã (decomposition) hoặc sử dụng bộ giải tối ưu chuyên biệt để giảm tải.
+
+\begin{notebox}
+Multi-class SVM là thuật toán ``không kết hợp'' vì toàn bộ $k$ lớp được tối ưu trong cùng một bài toán duy nhất. Mô hình không cần huấn luyện $k$ bài toán One-vs-All hay $k(k-1)/2$ bài toán One-vs-One.
+\end{notebox}
+
+\subsection{Boosting đa lớp -- AdaBoost.MH}
+\label{sssec:multiclass_boosting}
+
+\paragraph{Tóm tắt ký hiệu riêng:}
+Trong AdaBoost.MH, $\mathcal{Y}=\{-1,+1\}^k$ là không gian nhãn đa nhãn; $h_t$ là bộ phân loại yếu tại vòng $t$; $\alpha_t$ là trọng số của $h_t$; $g_n=\sum_{t=1}^{n}\alpha_t h_t$ là mô hình cộng gộp sau $n$ vòng; $F(\bm{\alpha})$ là hàm mục tiêu cần cực tiểu hóa; và $D_t$ là phân phối xác suất/trọng số trên các cặp mẫu--nhãn tại vòng $t$.
+
+Boosting là nhóm thuật toán xây dựng mô hình mạnh bằng cách kết hợp nhiều bộ học yếu. Trong bối cảnh đa lớp và đa nhãn, một biến thể quan trọng là AdaBoost.MH, được giới thiệu bởi Schapire và Singer. Thuật toán này được thiết kế cho dữ liệu có không gian nhãn
+\[
+  \mathcal{Y}=\{-1,+1\}^{k},
+\]
+trong đó mỗi mẫu $\bm{x}_i$ có vector nhãn $\bm{y}_i=(y_i[1],y_i[2],\ldots,y_i[k])$ với $y_i[l]\in\{-1,+1\}$. Giá trị $y_i[l]=+1$ nghĩa là mẫu $i$ thuộc nhãn $l$, còn $y_i[l]=-1$ nghĩa là không thuộc nhãn $l$.
+AdaBoost.MH trả về một tổ hợp lồi của các bộ phân loại cơ sở:
+\[
+  g_n(\bm{x},l)=\sum_{t=1}^{n}\alpha_t h_t(\bm{x},l).
+\]
+
+\paragraph{Hàm mục tiêu:}
+AdaBoost.MH tối ưu một hàm mục tiêu lồi, khả vi, đóng vai trò là chặn trên của hàm mất mát đa lớp--đa nhãn \cite{mohri2018foundations}:
+\begin{equation}
+    F(\bm{\alpha})=
+    \sum_{i=1}^{m}\sum_{l=1}^{k}
+    \exp\bigl(-y_i[l]g_n(\bm{x}_i,l)\bigr).
+    \label{eq:adaboost_mh_obj}
+\end{equation}
+Đây là cận trên vì với mọi $x$ và $l$ ta có $\mathbf{1}_{y[l]\neq g(x,l)} \leq e^{-y[l]g(x,l)}$. Nếu $y_i[l]g_n(\bm{x}_i,l)$ lớn và dương, số hạng mũ nhỏ. Ngược lại, nếu dự đoán sai hoặc lề âm, số hạng mũ tăng mạnh và thuật toán sẽ tập trung hơn vào cặp mẫu--nhãn này.
+
+\paragraph{Cơ chế hoạt động:}
+AdaBoost.MH có thể được xem như áp dụng \textit{coordinate descent} lên hàm $F(\bm{\alpha})$. Tương đương về mặt tính toán, thuật toán có thể được nhìn như chạy AdaBoost nhị phân chuẩn trên tập dữ liệu đã mở rộng $S'$, trong đó mỗi điểm $(\bm{x}_i,\bm{y}_i)$ được tách thành $k$ mẫu:
+\[
+  (\bm{x}_i,\bm{y}_i)
+  \quad\longrightarrow\quad
+  \bigl((\bm{x}_i,1),y_i[1]\bigr),\;\ldots,\;
+  \bigl((\bm{x}_i,k),y_i[k]\bigr).
+\]
+Tập $S'$ gồm $mk$ mẫu, và hàm mục tiêu~\eqref{eq:adaboost_mh_obj} trùng khớp với hàm mục tiêu của AdaBoost trên $S'$. Nhờ đó, toàn bộ lý thuyết phân tích hội tụ và cận tổng quát hóa đã thiết lập cho AdaBoost nhị phân đều áp dụng được tại đây \cite{mohri2018foundations}.
+
+\medskip
+\noindent\colorbox{yellow}{\textbf{[MỞ RỘNG]}} \textbf{Điều kiện học yếu và độ phức tạp.}
+
+Điều kiện học yếu (weak learning condition) yêu cầu ở mỗi vòng lặp tồn tại $h_t: \mathcal{X}\times\mathcal{Y}\to\{-1,+1\}$ sao cho $\Pr_{(i,l)\sim D_t}[h_t(\bm{x}_i,l)\neq y_i[l]] < 1/2$. Điều kiện này có thể khó đảm bảo khi các lớp gần nhau hoặc khi dữ liệu mất cân bằng nghiêm trọng.
+
+Về độ phức tạp: với $\mathcal{X}\subseteq\mathbb{R}^N$ và boosting stumps làm bộ phân loại cơ sở, thuật toán có độ phức tạp $\mathcal{O}((mk)\log(mk) + mkNT)$. Khi $k$ lớn, chi phí tăng theo $mk$ làm thuật toán khó mở rộng cho bài toán extreme multi-label.
+
+\subsection{Cây quyết định (Decision Trees)}
+\label{sssec:decision_trees}
+
+\paragraph{Tóm tắt ký hiệu riêng:}
+Với cây quyết định, $n$ là một nút trong cây, $q$ là câu hỏi phân tách tại nút, $p_l(n)$ là tỷ lệ mẫu lớp $l$ rơi vào nút $n$, $F(n)$ là độ vẩn đục của nút, $\widetilde{F}(n,q)$ là mức giảm vẩn đục sau khi tách nút $n$ bằng câu hỏi $q$, và $\lambda$ là tham số điều chuẩn khi cắt tỉa cây.
+
+Cây quyết định nhị phân là cấu trúc cây biểu diễn một phân hoạch của không gian đặc trưng $\mathcal{X}$. Mỗi nút trong (internal node) tương ứng với một câu hỏi về đặc trưng; mỗi lá (leaf) đại diện cho một vùng phân hoạch độc lập không giao nhau, được gán nhãn $l\in\mathcal{Y}$ bằng cách lấy đa số (majority vote) trên các điểm huấn luyện rơi vào vùng đó.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{\input{figures/decision_tree_partition}}
+\caption{Đối sánh giữa cấu trúc cây quyết định và phân hoạch không gian đặc trưng.}
+\label{fig:decision-tree-partition}
+\end{figure}
+
+\paragraph{Hàm quyết định:}
+Tại một nút lá $n$, nhãn dự đoán cho toàn bộ vùng tương ứng thường được chọn bằng bầu chọn đa số:
+\[
+  g_n=\arg\max_{l\in\mathcal{Y}}\#\{i:\bm{x}_i\in n,\ y_i=l\}.
+\]
+Nếu cần xác suất, cây có thể ước lượng phân phối nhãn tại lá bằng tỷ lệ mẫu:
+\[
+  \widehat{p}_n(l)=\frac{\#\{i:\bm{x}_i\in n,\ y_i=l\}}{\#\{i:\bm{x}_i\in n\}}.
+\]
+
+\paragraph{Học cây -- Chiến lược tham lam:}
+Bài toán tìm cây quyết định có sai số nhỏ nhất là NP-khó. Vì vậy, cây thường được xây dựng bằng \textit{chiến lược tham lam}: tại mỗi nút, thuật toán xét nhiều phép chia ứng viên và chọn phép chia $q$ làm giảm độ vẩn đục (node impurity decrease) $\widetilde{F}(n,q)$ nhiều nhất:
+\[
+  \widetilde{F}(n,q)
+  =F(n)-\frac{|n_L|}{|n|}F(n_L)-\frac{|n_R|}{|n|}F(n_R).
+\]
+
+Cho $p_l(n)$ là tỷ lệ mẫu thuộc lớp $l$ tại nút $n$. Ba tiêu chí độ đo impurity phổ biến là:
+\begin{equation}
+    F(n) = \begin{cases}
+        1 - \max_{l\in[k]}\,p_l(n) & \text{(Misclassification)},\\[4pt]
+        -\sum_{l=1}^{k} p_l(n)\log_2 p_l(n) & \text{(Entropy)},\\[4pt]
+        \sum_{l=1}^{k} p_l(n)\bigl(1 - p_l(n)\bigr) & \text{(Gini index)}.
+    \end{cases}
+    \label{eq:impurity}
+\end{equation}
+
+Entropy và Gini lồi chặt và khả vi, đảm bảo luôn giảm impurity nghiêm ngặt -- vì vậy được ưa dùng hơn trong thực tiễn.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{\input{figures/impurity_functions}}
+\caption{So sánh trực quan các hàm đo độ vẩn đục thường dùng trong cây quyết định.}
+\label{fig:impurity-functions}
+\end{figure}
+
+\paragraph{Chiến lược chống overfitting: grow-then-prune:}
+Cây quyết định rất dễ overfit. Một chiến lược phổ biến là ``trồng rồi tỉa'' (grow-then-prune): đầu tiên phát triển một cây lớn, sau đó tìm cây con tối ưu bằng cách cực tiểu hóa hàm chi phí có điều chuẩn:
+\begin{equation}
+    G_{\lambda}(\text{tree}') = \sum_{n\in\text{leaves}(\text{tree}')}|n|\,F(n)
+                              + \lambda\,|\text{leaves}(\text{tree}')|,
+    \label{eq:pruning}
+\end{equation}
+với $\lambda\geq 0$ là tham số điều chỉnh được chọn qua cross-validation.
+
+\paragraph{Ưu và nhược điểm:}
+Cây quyết định nhanh về huấn luyện và dự đoán, dễ diễn giải. Tuy nhiên, nó không ổn định: thay đổi nhỏ trong dữ liệu có thể tạo ra cây hoàn toàn khác. 
+
+
+\begin{expandbox}
+\subsection*{Chứng minh chiều VC của cây quyết định}
+
+ Xét họ giả thuyết $\mathcal{T}$ gồm các cây quyết định nhị phân có $n$ nút trong (internal nodes) trên không gian đặc trưng $N$ chiều. Mỗi nút trong sử dụng một phép chia dạng
+\[
+  X_j\leq a,
+\]
+trong đó $j\in\{1,\ldots,N\}$ là chỉ số đặc trưng và $a$ là ngưỡng chia. Ta chứng minh rằng
+\[
+  \operatorname{VCdim}(\mathcal{T})=O\bigl(n\log(nN)\bigr),
+\]
+và khi $N\gg n$, chặn này thường được viết gọn là $O(n\log N)$.
+
+\paragraph{Bước 1: Đếm số cấu trúc cây.}
+Một cây nhị phân có $n$ nút trong có số dạng hình học (topologies) không vượt quá số Catalan thứ $n$:
+\[
+  C_n=\frac{1}{n+1}\binom{2n}{n}\leq 4^n.
+\]
+Do đó, số cách chọn cấu trúc cây bị chặn trên bởi $4^n$.
+
+\paragraph{Bước 2: Đếm số phép chia tại mỗi nút.}
+Với $m$ điểm dữ liệu cố định, tại mỗi nút ta có $N$ lựa chọn đặc trưng. Sau khi chọn một đặc trưng $X_j$, các điểm dữ liệu khi chiếu lên trục đó tạo ra nhiều nhất $m$ ngưỡng phân biệt về mặt nhãn tách. Vì vậy, tại mỗi nút có nhiều nhất $Nm$ phép chia khác nhau trên tập $m$ điểm. Với $n$ nút trong, số cách gán phép chia cho một cấu trúc cây cố định bị chặn bởi
+\[
+  (Nm)^n.
+\]
+
+\paragraph{Bước 3: Chặn hàm tăng trưởng.}
+Kết hợp hai bước trên, số dichotomies tối đa mà họ cây có thể tạo ra trên $m$ điểm thỏa
+\[
+  \Pi_{\mathcal{T}}(m)\leq 4^n(Nm)^n=(4Nm)^n.
+\]
+Nếu $m$ điểm bị shatter, ta phải có $\Pi_{\mathcal{T}}(m)=2^m$, nên
+\[
+  2^m\leq (4Nm)^n.
+\]
+Lấy logarit cơ số 2 hai vế:
+\[
+  m\leq n\log_2(4Nm)
+   = n\log_2(4N)+n\log_2 m. \tag{*}
+\]
+
+\paragraph{Bước 4: Suy ra chặn VC-dimension.}
+Dùng bổ đề chuẩn: nếu $m\leq a+b\log_2 m$ với $a,b>0$, thì $m=O(a+b\log b)$. Áp dụng vào $(*)$ với
+\[
+  a=n\log_2(4N),\qquad b=n,
+\]
+ta được
+\[
+  m=O\bigl(n\log N+n\log n\bigr)=O\bigl(n\log(nN)\bigr).
+\]
+Vì vậy,
+\[
+  \operatorname{VCdim}(\mathcal{T})=O\bigl(n\log(nN)\bigr).
+\]
+Trong các bài toán chiều rất cao, chẳng hạn xử lý ngôn ngữ tự nhiên với $N\gg n$, thành phần $\log N$ chi phối, nên có thể viết gọn chặn trên là
+\[
+  \operatorname{VCdim}(\mathcal{T})=O(n\log N).
+\]
+\end{expandbox}

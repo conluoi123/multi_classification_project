@@ -1,0 +1,14 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \node[align=center, font=\bfseries] at (4,4.2) {Generate--rerank bằng LLM};
+  \node[draw, thick, fill=gray!10, rounded corners, minimum width=2.2cm, minimum height=0.8cm, align=center] (input) at (0.6,2) {Văn bản\\đầu vào};
+  \node[draw, thick, fill=blue!10, rounded corners, minimum width=2.55cm, minimum height=1.0cm, align=center] (gen) at (3.5,3) {Giai đoạn 1\\Generate};
+  \node[draw, thick, fill=green!10, rounded corners, minimum width=2.25cm, minimum height=0.85cm, align=center] (space) at (6.8,3) {Không gian nhãn\\rút gọn};
+  \node[draw, thick, fill=orange!10, rounded corners, minimum width=2.55cm, minimum height=1.0cm, align=center] (rerank) at (3.5,1) {Giai đoạn 2\\Rerank};
+  \node[draw, thick, fill=red!10, rounded corners, minimum width=2.25cm, minimum height=0.85cm, align=center] (output) at (6.8,1) {Dự đoán\\cuối cùng};
+  \draw[->, thick] (input) |- (gen.west);
+  \draw[->, thick] (input) |- (rerank.west);
+  \draw[->, thick] (gen)--(space) node[midway, above, font=\scriptsize, fill=white] {shortlist};
+  \draw[->, thick] (space)--(rerank) node[midway, right, font=\scriptsize, fill=white] {ứng viên};
+  \draw[->, thick] (rerank)--(output);
+  \node[draw, rounded corners, fill=white, align=center, font=\footnotesize, text width=6.7cm] at (4,-0.45) {Mô hình truy hồi giảm không gian nhãn trước; LLM chỉ xếp hạng lại tập ứng viên nhỏ.};
+\end{tikzpicture}

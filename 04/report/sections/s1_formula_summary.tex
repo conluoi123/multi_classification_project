@@ -1,0 +1,289 @@
+\section{Bảng tổng hợp công thức và ký hiệu}
+
+Bảng dưới đây tóm tắt các ký hiệu và công thức quan trọng được sử dụng xuyên suốt báo cáo. Mục tiêu của phần này là giúp người đọc tra cứu nhanh các biểu thức chính trước khi đi vào phần chứng minh và phân tích thuật toán.
+
+
+\subsection{Bảng tổng hợp ký hiệu}
+
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{6pt}
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các ký hiệu chính trong báo cáo}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{6.6cm}|}
+\hline
+\textbf{Nhóm} & \textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+Dữ liệu & $m$ & Số lượng điểm dữ liệu huấn luyện. \\
+\hline
+Dữ liệu & $N$ & Số chiều đặc trưng của dữ liệu đầu vào. \\
+\hline
+Dữ liệu & $\bm{x}_i$ & Điểm dữ liệu thứ $i$. \\
+\hline
+Dữ liệu & $y_i$ & Nhãn đúng của điểm dữ liệu thứ $i$ trong bài toán đơn nhãn. \\
+\hline
+Dữ liệu & $\mathcal{X}$ & Không gian đầu vào. \\
+\hline
+Dữ liệu & $\mathcal{Y}$ & Tập nhãn/lớp của bài toán. \\
+\hline
+Dữ liệu & $k=|\mathcal{Y}|$ & Số lượng lớp trong bài toán phân loại đa lớp. \\
+\hline
+Dữ liệu & $L$ & Số nhãn trong bài toán extreme multi-label classification. \\
+\hline
+Hàm điểm và lề & $h(\bm{x},y)$ & Hàm điểm số của mẫu $\bm{x}$ đối với nhãn $y$. \\
+\hline
+Hàm điểm và lề & $g_h(\bm{x})$ & Hàm dự đoán nhãn cuối cùng sinh bởi hàm điểm $h$. \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các ký hiệu chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{6.6cm}|}
+\hline
+\textbf{Nhóm} & \textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+Hàm điểm và lề & $\rho_h(\bm{x},y)$ & Lề đa lớp tại mẫu $(\bm{x},y)$. \\
+\hline
+Hàm điểm và lề & $\rho$ & Ngưỡng lề mong muốn trong hàm mất mát lề. \\
+\hline
+Hàm điểm và lề & $\Phi_\rho$ & Hàm mất mát lề với tham số lề $\rho$. \\
+\hline
+Hàm điểm và lề & $R(h)$ & Sai số thật/kỳ vọng của giả thuyết $h$. \\
+\hline
+Hàm điểm và lề & $\widehat{R}_\rho(h)$ & Sai số lề kinh nghiệm trên tập huấn luyện. \\
+\hline
+Rademacher & $S$ & Tập mẫu dùng để tính độ phức tạp Rademacher kinh nghiệm. \\
+\hline
+Rademacher & $\sigma_i$ & Biến Rademacher độc lập, nhận giá trị $\{-1,+1\}$. \\
+\hline
+Rademacher & $\widehat{\mathfrak{R}}_S(\mathcal{F})$ & Độ phức tạp Rademacher kinh nghiệm của lớp hàm $\mathcal{F}$. \\
+\hline
+Rademacher & $\mathfrak{R}_m(\mathcal{F})$ & Độ phức tạp Rademacher kỳ vọng theo mẫu kích thước $m$. \\
+\hline
+Rademacher & $\Pi_1(\mathcal{H})$ & Lớp hàm tọa độ thu được khi cố định một nhãn của $h\in\mathcal{H}$. \\
+\hline
+\end{tabular}
+\end{table}
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các ký hiệu chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{6.6cm}|}
+\hline
+\textbf{Nhóm} & \textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+Kernel/SVM & $\Phi(\bm{x}_i)$ & Ánh xạ đặc trưng của $\bm{x}_i$ vào không gian Hilbert. \\
+\hline
+Kernel/SVM & $K(\bm{x}_i,\bm{x}_j)$ & Hàm kernel, bằng tích vô hướng của hai ánh xạ đặc trưng. \\
+\hline
+Kernel/SVM & $\bm{w}_l$ & Vector trọng số tương ứng với lớp $l$. \\
+\hline
+Kernel/SVM & $W$ & Ma trận trọng số ghép từ $(\bm{w}_1,\ldots,\bm{w}_k)$. \\
+\hline
+Kernel/SVM & $\xi_i$ & Biến lơi lỏng biểu diễn mức vi phạm lề tại mẫu $\bm{x}_i$. \\
+\hline
+Kernel/SVM & $C$ & Siêu tham số điều chuẩn trong Multi-class SVM. \\
+\hline
+Kernel/SVM & $\Lambda$ & Chặn trên chuẩn của ma trận trọng số $W$. \\
+\hline
+Kernel/SVM & $r$ & Chặn trên chuẩn đặc trưng, với $K(\bm{x},\bm{x})\leq r^2$. \\
+\hline
+Boosting & $h_t$ & Bộ phân loại cơ sở/yếu tại vòng lặp $t$. \\
+\hline
+Boosting & $\alpha_t$ & Trọng số của bộ phân loại yếu $h_t$. \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các ký hiệu chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{6.6cm}|}
+\hline
+\textbf{Nhóm} & \textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+Boosting & $g_n$ & Tổ hợp các bộ phân loại yếu sau $n$ vòng. \\
+\hline
+Boosting & $F(\bm{\alpha})$ & Hàm mục tiêu mũ cần tối ưu trong AdaBoost.MH. \\
+\hline
+Boosting & $D_t(i,l)$ & Trọng số của cặp mẫu--nhãn $(i,l)$ tại vòng $t$. \\
+\hline
+Cây quyết định & $n$ & Một nút trong cây quyết định. \\
+\hline
+Cây quyết định & $q$ & Câu hỏi phân tách tại nút, ví dụ $X_j\leq a$. \\
+\hline
+Cây quyết định & $p_l(n)$ & Tỷ lệ mẫu lớp $l$ rơi vào nút $n$. \\
+\hline
+Cây quyết định & $F(n)$ & Hàm đo độ vẩn đục tại nút $n$. \\
+\hline
+Cây quyết định & $\widetilde{F}(n,q)$ & Mức giảm độ vẩn đục khi tách nút $n$ bằng câu hỏi $q$. \\
+\hline
+Cây quyết định & $\lambda$ & Tham số điều chuẩn dùng để cắt tỉa cây. \\
+\hline
+ECOC/XMC & $M$ & Ma trận mã ECOC, mỗi hàng là codeword của một lớp. \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các ký hiệu chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{6.6cm}|}
+\hline
+\textbf{Nhóm} & \textbf{Ký hiệu} & \textbf{Ý nghĩa} \\
+\hline
+ECOC/XMC & $M_l$ & Codeword ứng với lớp $l$. \\
+\hline
+ECOC/XMC & $d_H$ & Khoảng cách Hamming giữa hai vector mã. \\
+\hline
+ECOC/XMC & $c$ & Độ dài mã ECOC, tương ứng số bộ phân loại nhị phân. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Bảng tổng hợp công thức}
+
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các công thức chính trong báo cáo}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{5.6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+\hline
+\textbf{Chủ đề} & \textbf{Công thức} & \textbf{Ý nghĩa} \\
+\hline
+Hàm điểm số
+& $h:\mathcal{X}\times\mathcal{Y}\to\mathbb{R}$
+& Gán điểm tin cậy cho cặp dữ liệu--nhãn $(\bm{x},y)$. \\
+\hline
+Quy tắc dự đoán đa lớp
+& $g_h(\bm{x})=\arg\max_{y\in\mathcal{Y}}h(\bm{x},y)$
+& Chọn nhãn có điểm số cao nhất. \\
+\hline
+Lề đa lớp
+& $\rho_h(\bm{x},y)=h(\bm{x},y)-\max_{y'\neq y}h(\bm{x},y')$
+& Khoảng cách giữa điểm nhãn đúng và nhãn sai cạnh tranh mạnh nhất. \\
+\hline
+Điều kiện phân loại sai
+& $g_h(\bm{x})\neq y\Longleftrightarrow \rho_h(\bm{x},y)\leq 0$
+& Mô hình sai khi lề không dương. \\
+\hline
+Sai số 0--1 kinh nghiệm
+& $\widehat{R}_{0/1}(h)=\dfrac{1}{m}\sum_{i=1}^{m}\mathbb{1}[\rho_h(\bm{x}_i,y_i)\leq0]$
+& Tỷ lệ mẫu huấn luyện bị phân loại sai. \\
+\hline
+Hàm mất mát lề
+& $\Phi_\rho(t)=\begin{cases}1,&t\leq0\\1-t/\rho,&0<t<\rho\\0,&t\geq\rho\end{cases}$
+& Phạt mẫu sai hoặc đúng nhưng chưa đạt lề mong muốn. \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các công thức chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{5.6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+\hline
+\textbf{Chủ đề} & \textbf{Công thức} & \textbf{Ý nghĩa} \\
+\hline
+Sai số lề kinh nghiệm
+& $\widehat{R}_\rho(h)=\dfrac{1}{m}\sum_{i=1}^{m}\Phi_\rho(\rho_h(\bm{x}_i,y_i))$
+& Chặn trên mềm của sai số huấn luyện 0--1. \\
+\hline
+Độ phức tạp Rademacher
+& $\widehat{\mathfrak{R}}_S(\mathcal{F})=\dfrac{1}{m}\mathbb{E}_{\bm{\sigma}}\left[\sup_{f\in\mathcal{F}}\sum_{i=1}^{m}\sigma_i f(\bm{x}_i)\right]$
+& Đo khả năng lớp hàm khớp nhiễu ngẫu nhiên. \\
+\hline
+Bổ đề max
+& $\widehat{\mathfrak{R}}_S(\mathcal{G})\leq\sum_{j=1}^{\ell}\widehat{\mathfrak{R}}_S(\mathcal{F}_j)$
+& Chặn độ phức tạp của lớp hàm lấy cực đại. \\
+\hline
+Giới hạn tổng quát hóa đa lớp
+& $R(h)\leq\widehat{R}_\rho(h)+\dfrac{2k^2}{\rho}\mathfrak{R}_m(\Pi_1(\mathcal{H}))+\sqrt{\dfrac{\log(1/\delta)}{2m}}$
+& Chặn sai số thật bằng sai số lề, độ phức tạp mô hình và xác suất tin cậy. \\
+\hline
+Kernel bound
+& $\mathfrak{R}_m(\Pi_1(\mathcal{H}_{K,p}))\leq\sqrt{\dfrac{r^2\Lambda^2}{m}}$
+& Chặn Rademacher cho giả thuyết kernel khi $\|W\|\leq\Lambda$ và $K(\bm{x},\bm{x})\leq r^2$. \\
+\hline
+Hệ quả kernel
+& $R(h)\leq\widehat{R}_\rho(h)+2k^2\sqrt{\dfrac{r^2\Lambda^2}{m\rho^2}}+\sqrt{\dfrac{\log(1/\delta)}{2m}}$
+& Dạng cụ thể của giới hạn lề cho mô hình kernel. \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các công thức chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{5.6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+\hline
+\textbf{Chủ đề} & \textbf{Công thức} & \textbf{Ý nghĩa} \\
+\hline
+Multi-class SVM primal
+& $\min_{W,\bm{\xi}}\dfrac{1}{2}\sum_{l=1}^{k}\|\bm{w}_l\|^2+C\sum_{i=1}^{m}\xi_i$
+& Tối ưu đồng thời lề lớn và lỗi huấn luyện nhỏ. \\
+\hline
+Ràng buộc SVM
+& $\langle\bm{w}_{y_i},\Phi(\bm{x}_i)\rangle\geq\langle\bm{w}_{l},\Phi(\bm{x}_i)\rangle+1-\xi_i$
+& Điểm nhãn đúng phải lớn hơn mọi nhãn sai ít nhất $1-\xi_i$. \\
+\hline
+OVA
+& $h_{\text{OVA}}(\bm{x})=\arg\max_{l\in\mathcal{Y}}f_l(\bm{x})$
+& Huấn luyện một bộ phân loại cho mỗi lớp so với phần còn lại. \\
+\hline
+Số mô hình OVO
+& $\binom{k}{2}=\dfrac{k(k-1)}{2}$
+& Số bộ phân loại cặp lớp cần huấn luyện. \\
+\hline
+ECOC decoding
+& $h_{\text{ECOC}}(\bm{x})=\arg\min_{l\in\mathcal{Y}}d_H(M_l,\bm{h}(\bm{x}))$
+& Chọn lớp có mã gần nhất với vector dự đoán. \\
+\hline
+Khoảng cách Hamming
+& $d_H(\bm{u},\bm{v})=\dfrac{1}{2}\sum_{j=1}^{c}(1-u_jv_j)$
+& Số bit khác nhau giữa hai codeword nhị phân. \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tổng hợp các công thức chính trong báo cáo (tiếp)}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{5.6cm}|>{\raggedright\arraybackslash}p{5.2cm}|}
+\hline
+\textbf{Chủ đề} & \textbf{Công thức} & \textbf{Ý nghĩa} \\
+\hline
+AdaBoost.MH
+& $F(\bm{\alpha})=\sum_{i=1}^{m}\sum_{l=1}^{k}\exp(-y_i[l]g_n(\bm{x}_i,l))$
+& Hàm mục tiêu mũ cho bài toán đa nhãn. \\
+\hline
+Cập nhật trọng số Boosting
+& $D_{t+1}(i,l)\propto D_t(i,l)\exp(-\alpha_t y_i[l]h_t(\bm{x}_i,l))$
+& Tăng trọng số cho các cặp mẫu--nhãn dự đoán sai. \\
+\hline
+Entropy
+& $\text{Entropy}(n)=-\sum_{l=1}^{k}p_l(n)\log p_l(n)$
+& Độ vẩn đục của nút trong cây quyết định. \\
+\hline
+Gini index
+& $\text{Gini}(n)=1-\sum_{l=1}^{k}p_l(n)^2$
+& Độ vẩn đục phổ biến khi xây cây quyết định. \\
+\hline
+Cắt tỉa cây
+& $G_\lambda(\text{tree})=\sum_{n\in\widetilde{\text{tree}}}|n|F(n)+\lambda|\widetilde{\text{tree}}|$
+& Cân bằng giữa lỗi tại lá và độ phức tạp của cây. \\
+\hline
+\end{tabular}
+\end{table}

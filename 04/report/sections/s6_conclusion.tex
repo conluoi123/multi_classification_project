@@ -1,0 +1,9 @@
+\section{Kết luận}
+
+Đồ án đã hệ thống hóa bài toán phân loại đa lớp từ phát biểu toán học, hàm điểm số, lề đa lớp, hàm mất mát lề đến các giới hạn tổng quát hóa dựa trên độ phức tạp Rademacher. Phân tích cho thấy số lớp, độ phức tạp của lớp giả thuyết và kích thước lề đều ảnh hưởng trực tiếp đến khả năng tổng quát hóa của mô hình.
+
+Về thuật toán, nhóm không kết hợp như multi-class SVM, boosting và cây quyết định học trực tiếp trên không gian đa lớp. Nhóm kết hợp như OVA, OVO và ECOC quy bài toán về nhiều bài toán nhị phân rồi tổng hợp dự đoán. OVA đơn giản và dự đoán nhanh, OVO giảm kích thước từng bài toán con nhưng cần nhiều mô hình hơn, còn ECOC bổ sung tư tưởng mã sửa lỗi để tăng độ bền vững.
+
+Các hướng hiện đại như Extreme Multi-label Classification, cây nhãn, nhúng nhãn, Transformer, CRF và mô hình ngôn ngữ lớn mở rộng phân loại đa lớp sang bối cảnh số nhãn cực lớn hoặc đầu ra có cấu trúc. Đây là các hướng quan trọng trong những ứng dụng thực tế như gán nhãn văn bản, đề xuất sản phẩm, truy hồi thông tin và xử lý ngôn ngữ tự nhiên.
+
+Trong thực nghiệm, cần đánh giá đồng thời độ chính xác, macro-F1, weighted-F1, confusion matrix và thời gian chạy. Không có phương pháp tối ưu tuyệt đối cho mọi dữ liệu; lựa chọn mô hình phụ thuộc vào số lớp, mức mất cân bằng, kích thước dữ liệu, yêu cầu tốc độ và khả năng diễn giải.

@@ -1,0 +1,90 @@
+\documentclass[12pt, a4paper]{article}
+
+\PassOptionsToPackage{hyphens}{url}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{listings}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{tcolorbox}
+\usepackage{mathtools}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usetikzlibrary{arrows.meta, calc, positioning, shapes.geometric, shapes.misc, decorations.pathreplacing, matrix}
+
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}
+\onehalfspacing
+\emergencystretch=3em
+\raggedbottom
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small CSC14005 -- Nhập môn Học máy}
+\lhead{\small Đồ án 2 -- Phân loại đa lớp}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\definecolor{myblue}{RGB}{31, 73, 125}
+\definecolor{hcmusblue}{RGB}{0, 82, 155}
+\definecolor{mygray}{RGB}{245, 245, 245}
+\definecolor{mygreen}{RGB}{0, 128, 0}
+\definecolor{myred}{RGB}{180, 0, 0}
+\definecolor{codebg}{RGB}{248, 248, 248}
+\definecolor{tableheadbg}{RGB}{230, 240, 250}
+
+\hypersetup{colorlinks=true, linkcolor=myblue, citecolor=myblue, urlcolor=myblue}
+
+\newtheorem{theorem}{Định lý}[section]
+\newtheorem{definition}{Định nghĩa}[section]
+\newtheorem{proposition}{Mệnh đề}[section]
+\newtheorem{remark}{Nhận xét}[section]
+
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{notebox}{colback=mygray, colframe=myblue, fonttitle=\bfseries, title=Lưu ý, breakable}
+\newtcolorbox{resultbox}{colback=green!5, colframe=mygreen, fonttitle=\bfseries, title=Kết quả, breakable}
+\newtcolorbox{expandbox}{colback=yellow!12, colframe=orange!80!black, fonttitle=\bfseries, title={[Mở rộng]}, breakable}
+
+\lstset{backgroundcolor=\color{codebg}, basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single, language=Python, keywordstyle=\color{myblue}\bfseries, commentstyle=\color{mygreen}, stringstyle=\color{myred}, numbers=left, numberstyle=\tiny\color{gray}, xleftmargin=1.5em}
+
+\titleformat{\section}{\large\bfseries\color{myblue}}{\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{myblue!80!black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{myblue!70!black}}{\thesubsubsection}{1em}{}
+\setcounter{secnumdepth}{3}
+
+\begin{document}
+\pagenumbering{roman}
+\input{modules/cover}
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/s0_abstract}
+\input{sections/s1_overview}
+\input{sections/s1_formula_summary}
+\input{sections/s2_theory}
+\input{sections/s3_aggregated}
+\input{sections/s4_advances}
+\input{sections/s5_demo_evaluation}
+\input{sections/s6_conclusion}
+\input{modules/references}
+
+\end{document}

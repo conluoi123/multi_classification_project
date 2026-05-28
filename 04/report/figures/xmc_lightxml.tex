@@ -1,0 +1,16 @@
+\begin{tikzpicture}[>=Stealth, font=\footnotesize]
+  \node[align=center, font=\bfseries] at (4.5,3.45) {LightXML: lấy mẫu tiêu cực động};
+  \node[draw, thick, fill=cyan!10, rectangle, rounded corners, minimum width=2.25cm, minimum height=1.05cm, align=center] (gen) at (0.35,1.35) {Generator\\gọi lại nhãn};
+  \node[draw, dashed, thick, fill=yellow!12, rounded corners, minimum width=2.35cm, minimum height=1.05cm, align=center] (cand) at (4.5,1.35) {Tập ứng viên\\hard negatives};
+  \node[draw, thick, fill=magenta!10, rectangle, rounded corners, minimum width=2.25cm, minimum height=1.05cm, align=center] (disc) at (8.65,1.35) {Discriminator\\xếp hạng nhãn};
+
+  \draw[->, very thick, blue] (gen.east) -- (cand.west);
+  \draw[->, very thick, blue] (cand.east) -- (disc.west);
+  \node[font=\tiny, text=blue, fill=white, inner sep=1pt] at (2.42,1.92) {sinh nhãn khó};
+  \node[font=\tiny, text=blue, fill=white, inner sep=1pt] at (6.58,1.92) {lọc và xếp hạng};
+
+  \draw[->, thick, red!75!black, dashed] (disc.south) |- (4.5,-0.15) -| (gen.south);
+  \node[font=\tiny, text=red!75!black, fill=white, inner sep=1pt] at (2.2,-0.28) {tối ưu hóa chung};
+
+  \node[draw, rounded corners, fill=white, align=center, font=\footnotesize, text width=7.2cm] at (4.5,-1.15) {Generator liên tục tạo nhãn âm khó hơn, giúp Discriminator học ranh giới tốt hơn trên không gian nhãn lớn.};
+\end{tikzpicture}

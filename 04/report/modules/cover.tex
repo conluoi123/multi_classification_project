@@ -1,0 +1,66 @@
+\hypersetup{pageanchor=false}
+%  BÌA
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width=3pt, color=myblue] 
+      ($(current page.south west) + (2cm, 2cm)$) 
+      rectangle 
+      ($(current page.north east) + (-2cm, -2cm)$);
+    \draw[line width=1pt, color=myblue] 
+      ($(current page.south west) + (2.15cm, 2.15cm)$) 
+      rectangle 
+      ($(current page.north east) + (-2.15cm, -2.15cm)$);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{1cm}
+  
+  {\large\textbf{ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH}}\\[0.3em]
+  {\large\textbf{TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN}}\\[0.3em]
+  {\large\textbf{KHOA CÔNG NGHỆ THÔNG TIN}}
+
+  \vspace{1.5cm}
+  \IfFileExists{figures/hcmus_logo.png}{\includegraphics[width=4.5cm]{figures/hcmus_logo.png}\\[1.5cm]}{\vspace{1cm}}
+  \rule{\linewidth}{1.5pt}\\[0.5em]
+  {\Huge\bfseries\color{hcmusblue} NHẬP MÔN HỌC MÁY}\\[6pt]
+  {\LARGE\bfseries\color{myblue} ĐỒ ÁN 2}\\[0.4em]
+  {\large PHÂN LOẠI ĐA LỚP VÀ CÁC TIẾN BỘ MỚI}\\[0.2em]
+  
+\rule{14cm}{1.4pt}\\[22pt]
+%% Bảng thành viên — điền thông tin thực tế
+\begin{tabular}{|c|l|c|l|}
+  \hline
+  \rowcolor{tableheadbg}
+  \textbf{STT} & \multicolumn{1}{c|}{\textbf{Họ và tên}}
+               & \textbf{MSSV}
+               & \multicolumn{1}{c|}{\textbf{Vai trò}} \\
+  \hline
+  1 & Nguyễn Kim Quốc & \texttt{23120347} & Nhóm trưởng \\
+  \hline
+  2 & Ngô Thị Thục Quyên & \texttt{23120348} & Thành viên \\
+  \hline
+  3 & Cao Quốc Tuấn & \texttt{23120390} & Thành viên \\
+  \hline
+  4 & Lục Hoàng Tuấn & \texttt{23120393} & Thành viên \\
+  \hline
+  5 & Huỳnh Trọng Viên & \texttt{23120403} & Thành viên \\
+  \hline
+\end{tabular}\\[28pt]
+
+  \begin{tabular}{ll}
+    \textbf{Môn học:}   & Nhập môn Học máy (CSC14005) \\[0.3em]
+    \textbf{Học kỳ:}    & Học kỳ 2 -- 2025/2026 \\[0.3em]
+    \textbf{GVHD:}      & Th.S Lê Nhựt Nam \\[0.3em]
+    \textbf{Bộ môn:}    & Khoa học Máy tính \\
+  \end{tabular}
+
+  \vspace{1.5cm}
+  \vfill
+  {\small TP. Hồ Chí Minh, \today}
+\end{titlepage}
+
+% MỤC LỤC
+\tableofcontents
+\clearpage
+\hypersetup{pageanchor=true}

@@ -1,0 +1,24 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \node[align=center, font=\bfseries] at (4,4.25) {Parabel vs. Bonsai trong phân hoạch nhãn};
+  \begin{scope}[shift={(1.4,0)}]
+    \node[align=center, font=\bfseries] at (0,3.05) {Parabel\\cây nhị phân};
+    \node[circle, draw, thick, fill=blue!20, minimum size=1.0cm] (p0) at (0,1.8) {};
+    \node[circle, draw, thick, fill=blue!15, minimum size=0.75cm] (p1) at (-1.05,0.65) {};
+    \node[circle, draw, thick, fill=blue!15, minimum size=0.75cm] (p2) at (1.05,0.65) {};
+    \foreach \x/\n in {-1.55/p3,-0.55/p4,0.55/p5,1.55/p6} {\node[circle, draw, thick, fill=blue!10, minimum size=0.42cm] (\n) at (\x,-0.65) {};}
+    \draw[->, thick] (p0)--(p1); \draw[->, thick] (p0)--(p2);
+    \draw[->, thick] (p1)--(p3); \draw[->, thick] (p1)--(p4);
+    \draw[->, thick] (p2)--(p5); \draw[->, thick] (p2)--(p6);
+    \node[align=center, text=blue!80!black, font=\footnotesize] at (0,-1.65) {Nhiều tầng quyết định\\dễ lan truyền lỗi};
+  \end{scope}
+  \draw[dashed, thick, gray] (4,3.45) -- (4,-1.95);
+  \begin{scope}[shift={(6.5,0)}]
+    \node[align=center, font=\bfseries] at (0,3.05) {Bonsai\\cây đa phân nông};
+    \node[circle, draw, thick, fill=green!20, minimum size=1.0cm] (b0) at (0,1.65) {};
+    \node[circle, draw, thick, fill=green!15, minimum size=0.86cm] (b1) at (-1.65,0.25) {};
+    \node[circle, draw, thick, fill=green!15, minimum size=0.58cm] (b2) at (0,0.25) {};
+    \node[circle, draw, thick, fill=green!15, minimum size=0.72cm] (b3) at (1.65,0.25) {};
+    \draw[->, thick] (b0)--(b1); \draw[->, thick] (b0)--(b2); \draw[->, thick] (b0)--(b3);
+    \node[align=center, text=green!55!black, font=\footnotesize] at (0,-1.65) {Ít tầng hơn\\giữ recall cho nhãn đuôi};
+  \end{scope}
+\end{tikzpicture}

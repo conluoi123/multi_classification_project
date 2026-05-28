@@ -33,7 +33,6 @@ Thư mục `data/` được sử dụng để lưu trữ các bộ dữ liệu t
   - **Số nhãn (Labels):** 3,956 chủ đề pháp lý Châu Âu (~5.3 nhãn / văn bản).
 - **Giải thích định dạng LibSVM ("Tại sao dữ liệu toàn là số?"):**
   Dữ liệu EUR-Lex không lưu dưới dạng văn bản thô mà lưu dưới định dạng LibSVM để tiết kiệm hàng chục GB RAM. Một dòng tiêu biểu có cấu trúc:
-
   ```text
   12,45,102  5:0.123  18:0.456  1024:0.789
   ```
@@ -45,7 +44,7 @@ Thư mục `data/` được sử dụng để lưu trữ các bộ dữ liệu t
 
 ## 3. Hướng dẫn nạp file thủ công cho các thành viên
 
-Nếu muốn chạy thực nghiệm trên toàn bộ dữ liệu gốc quy mô lớn thay vì mô phỏng, vui lòng thực hiện theo các bước sau:
+Nếu bạn muốn chạy thực nghiệm trên toàn bộ dữ liệu gốc quy mô lớn thay vì mô phỏng, vui lòng thực hiện theo các bước sau:
 
 1. **Tải dữ liệu:** Truy cập vào kho lưu trữ của nhóm trên Google Drive theo đường dẫn sau: [Tải Data tại đây](https://drive.google.com/drive/folders/1uwnTxExtI4tOkHdnXVBSqheUEDAtGt97?usp=drive_link) và tải toàn bộ các file dữ liệu về.
 2. **Lưu vào thư mục data:** Giải nén (nếu có) và đặt tất cả các file dữ liệu đã tải về vào thư mục `data/`.
