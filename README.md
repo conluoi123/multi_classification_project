@@ -1,4 +1,3 @@
-
 # Đồ án 2: Phân loại Đa lớp (Multi-class Classification)
 
 ## 1. Thông tin nhóm
@@ -35,6 +34,11 @@
 ## 4. Hướng dẫn tái tạo kết quả thực nghiệm
 
 Để chạy lại toàn bộ các thử nghiệm và tái tạo kết quả, bạn vui lòng thực hiện theo các bước sau:
+
+> **LƯU Ý VỀ DỮ LIỆU THỰC TẾ:**
+> Để đảm bảo quá trình chạy thử (demo) diễn ra nhanh chóng, mượt mà và không gây tràn RAM (Out-of-Memory) trên máy tính cá nhân, hệ thống mặc định được thiết lập để chỉ trích xuất và chạy trên một **tập con nhỏ (subsample)** của các bộ dữ liệu khổng lồ (ví dụ: MNIST giới hạn ở 1000 ảnh, EUR-Lex giới hạn ở 1000 văn bản).
+>
+> _Nếu máy tính có cấu hình mạnh và bạn muốn huấn luyện trên 100% dữ liệu gốc, bạn có thể chỉnh sửa các tham số `subsample=None` hoặc `n_samples` trong file `src/experiments/exp_real_datasets.py`._
 
 **Bước 1: Cài đặt môi trường**
 Đảm bảo máy tính đã cài đặt Python (phiên bản 3.9 trở lên). Mở terminal tại thư mục gốc của dự án và chạy lệnh:

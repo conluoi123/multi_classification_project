@@ -1,20 +1,18 @@
 # Hướng dẫn chạy mã nguồn (Source Code Guide)
 
-Thư mục `code/` chứa toàn bộ mã nguồn của dự án "Multi-class Classification" (Phân loại đa lớp).
+Thư mục `src/` chứa toàn bộ mã nguồn của dự án "Multi-class Classification" (Phân loại đa lớp). 
 
 ## 1. Môi trường cài đặt
 
-Dự án sử dụng Python và các thư viện phổ biến trong lĩnh vực Machine Learning.
+Dự án sử dụng Python và các thư viện phổ biến trong lĩnh vực Machine Learning. 
 
 **Cài đặt các thư viện cần thiết:**
 Tại thư mục gốc của dự án, bạn có thể cài đặt các thư viện thông qua file `requirements.txt`:
-
 ```bash
 pip install -r requirements.txt
 ```
 
 Các thư viện chính được sử dụng bao gồm:
-
 - `numpy >= 1.26.4`
 - `scikit-learn >= 1.4.2`
 - `matplotlib >= 3.8.4`
@@ -27,17 +25,14 @@ Các thư viện chính được sử dụng bao gồm:
 Để chạy các thử nghiệm chính, bạn có thể thực thi trực tiếp file `main_experiments.py`. File này sẽ chạy tuần tự toàn bộ các kịch bản thử nghiệm bao gồm: trực quan hoá ma trận phân loại, kiểm chứng OVO chuyên sâu, đánh giá hiệu năng tổng thể, hiệu chuẩn (Platt Scaling) và độ phức tạp thời gian.
 
 **Cú pháp:**
-
 ```bash
 python src/main_experiments.py
 ```
-
-_Lưu ý: Hãy chạy lệnh trên từ thư mục gốc của dự án (thư mục chứa thư mục `src`)._
+*Lưu ý: Hãy chạy lệnh trên từ thư mục gốc của dự án (thư mục chứa thư mục `src`).*
 
 Sau khi chạy xong, kết quả dạng Text sẽ hiển thị trên Terminal và các biểu đồ sẽ được tự động lưu vào thư mục `figures/` ở thư mục gốc.
 
 Ngoài ra, bạn cũng có thể chạy các kịch bản thực nghiệm chuyên sâu được tổ chức riêng lẻ trong thư mục `experiments/`:
-
 ```bash
 python src/experiments/exp_binary_reductions.py
 python src/experiments/exp_real_datasets.py
