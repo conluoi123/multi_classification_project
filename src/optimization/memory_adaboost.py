@@ -1,3 +1,4 @@
+from matplotlib.pylab import cond
 import numpy as np
 from src.base.decision_stump import DecisionStump
 from src.direct_multiclass.adaboost_mh import AdaBoostMH
@@ -46,7 +47,7 @@ class MemoryEfficientDecisionStump(DecisionStump):
         m = len(X)
         cond = (X[:, self.j] <= self.t)
         if self.l is None:
-            pred = np.where(cond[:, None], self.p, -self.p)
+            pred = np.repeat(np.where(cond, self.p, -self.p)[:, None], k, axis=1)
             return pred
         else:
             pred = np.full((m, k), -self.p, dtype=float)
